@@ -93,6 +93,12 @@ button {
     flex-shrink: 0;
 }
 
+#editMode {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 
 html,
 body {
@@ -179,6 +185,7 @@ body {
         right: 15px;
         bottom: 15px;
     }
+
 }
 </style>
 </head>
@@ -186,6 +193,8 @@ body {
 <body>
 
 <h2>📄 Генератор на оферти (CRM)</h2>
+<div id="editMode">
+</div>
 
 <div class="card">
 
@@ -228,6 +237,8 @@ body {
 <script>
     let prices = {};
 let items = [];
+let editingOfferId = null;
+let qty = 1;
 
 // fetch('./prices.json')
 // .then(r => r.json())
@@ -517,6 +528,7 @@ function generatePDF() {
 }
 
 function newOffer() {
+  
 
     if (!confirm("Сигурен ли си, че искаш нова оферта?")) return;
 
@@ -530,6 +542,7 @@ function newOffer() {
     qty = 1;
 
     let qtyEl = document.getElementById("qty");
+     
 
     if (qtyEl) {
         if (qtyEl.tagName !== "INPUT" && qtyEl.tagName !== "SELECT") {
@@ -540,8 +553,64 @@ function newOffer() {
     }
 
     document.getElementById("total").innerText = "0";
+     document.getElementById("qty").value = 1;
+
+    editingOfferId = null;
+
+document.getElementById("editMode").innerHTML = "";
 }
 
+function saveData() {
+
+    const data = {
+        items,
+        clientName: document.getElementById("clientName").value,
+        clientAddress: document.getElementById("clientAddress").value,
+        note: document.getElementById("note").value
+    };
+
+    localStorage.setItem("crm_offer", JSON.stringify(data));
+}
+
+// function saveOffer() {
+
+//     if (items.length === 0) {
+//         alert("Няма артикули");
+//         return;
+//     }
+
+//     let history =
+//         JSON.parse(localStorage.getItem("crm_history")) || [];
+
+//     const offer = {
+
+//         id: Date.now(),
+
+//         date: new Date().toLocaleString("bg-BG"),
+
+//         clientName:
+//             document.getElementById("clientName").value || "-",
+
+//         clientAddress:
+//             document.getElementById("clientAddress").value || "-",
+
+//         note:
+//             document.getElementById("note").value || "",
+
+//         items: [...items]
+//     };
+
+//     history.unshift(offer);
+
+//     localStorage.setItem(
+//         "crm_history",
+//         JSON.stringify(history)
+//     );
+
+//     renderHistory();
+
+//     alert("Офертата е запазена");
+// }
 function saveOffer() {
 
     if (items.length === 0) {
@@ -554,7 +623,7 @@ function saveOffer() {
 
     const offer = {
 
-        id: Date.now(),
+        id: editingOfferId || Date.now(),
 
         date: new Date().toLocaleString("bg-BG"),
 
@@ -570,17 +639,47 @@ function saveOffer() {
         items: [...items]
     };
 
-    history.unshift(offer);
+    // 🔥 EDIT MODE
+    if (editingOfferId) {
+
+        history = history.map(o =>
+            o.id === editingOfferId ? offer : o
+        );
+
+        alert("Офертата е обновена");
+
+    }
+
+    // 🔥 NEW OFFER
+    else {
+
+        history.unshift(offer);
+
+        alert("Офертата е запазена");
+    }
 
     localStorage.setItem(
         "crm_history",
         JSON.stringify(history)
     );
 
-    renderHistory();
+    editingOfferId = null;
 
-    alert("Офертата е запазена");
+    renderHistory();
+      items = [];
+    document.getElementById("clientName").value = "";
+    document.getElementById("clientAddress").value = "";
+    document.getElementById("note").value = "";
+    document.getElementById("total").innerText = "0";
+    document.getElementById("list").innerHTML = "";
+    document.getElementById("editMode").innerHTML = "";
+    
+    // ако искаш можеш да върнеш и quantity на 1
+    document.getElementById("qty").value = 1;
+   
 }
+
+
 function renderHistory() {
 
     let history =
@@ -624,31 +723,31 @@ function renderHistory() {
     });
 }
 
-function loadOffer(id) {
+// function loadOffer(id) {
 
-    let history =
-        JSON.parse(localStorage.getItem("crm_history")) || [];
+//     let history =
+//         JSON.parse(localStorage.getItem("crm_history")) || [];
 
-    let offer =
-        history.find(o => o.id === id);
+//     let offer =
+//         history.find(o => o.id === id);
 
-    if (!offer) return;
+//     if (!offer) return;
 
-    items = offer.items;
+//     items = offer.items;
 
-    document.getElementById("clientName").value =
-        offer.clientName;
+//     document.getElementById("clientName").value =
+//         offer.clientName;
 
-    document.getElementById("clientAddress").value =
-        offer.clientAddress;
+//     document.getElementById("clientAddress").value =
+//         offer.clientAddress;
 
-    document.getElementById("note").value =
-        offer.note;
+//     document.getElementById("note").value =
+//         offer.note;
 
-    render();
+//     render();
 
-    saveData();
-}
+//     saveData();
+// }
 function deleteOffer(id) {
 
     if (!confirm("Изтриване?")) return;
@@ -665,6 +764,178 @@ function deleteOffer(id) {
     );
 
     renderHistory();
+}
+function loadOffer(id) {
+
+    let history =
+        JSON.parse(localStorage.getItem("crm_history")) || [];
+
+    let offer =
+        history.find(o => o.id === id);
+
+    if (!offer) return;
+
+    editingOfferId = id;
+
+    items = offer.items;
+
+    document.getElementById("clientName").value =
+        offer.clientName;
+
+    document.getElementById("clientAddress").value =
+        offer.clientAddress;
+
+    document.getElementById("note").value =
+        offer.note;
+
+    render();
+
+    saveData();
+
+    // scroll top
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+    document.getElementById("editMode").innerHTML = `
+<style>
+  #editMode .edit-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    background:#f39c12;
+    color:white;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:10px;
+    font-weight:bold;
+  }
+  #editMode .edit-text {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #editMode .cancel-btn {
+    background:#e74c3c;
+    color:white;
+    border:none;
+    border-radius:5px;
+    padding:5px 8px;
+    cursor:pointer;
+  }
+  /* Малки екрани */
+  @media (max-width: 400px) {
+    #editMode .cancel-btn {
+      flex-basis: 100%;
+      margin-top: 5px;
+      display: block;
+      text-align: center;
+    }
+  }
+</style>
+
+<div class="edit-banner">
+  <span class="edit-text">✏️ Редактираш оферта</span>
+  <button class="cancel-btn" onclick="cancelEdit()">❌ Откажи</button>
+</div>
+`;
+// document.getElementById("editMode").innerHTML = `
+// <div style="
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     flex-wrap: wrap;
+//     background:#f39c12;
+//     color:white;
+//     padding:10px;
+//     border-radius:8px;
+//     margin-bottom:10px;
+//     font-weight:bold;
+// ">
+// <span style="
+//     flex: 1;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// ">✏️ Редактираш оферта</span>
+// <button onclick="cancelEdit()" style="
+//     background:#e74c3c;
+//     color:white;
+//     border:none;
+//     border-radius:5px;
+//     padding:5px 8px;
+//     cursor:pointer;
+//     margin-top:5px;
+//     flex-basis: 100%; /* заема цял ред, когато се пренася */
+//     text-align: center; /* центрира текста в бутона */
+//     display: block; /* позволява центриране */
+// ">❌ Откажи</button>
+// </div>
+// `;
+// // 
+// document.getElementById("editMode").innerHTML = `
+// <div style="
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center; /* вертикално центриране */
+//     flex-wrap: wrap; /* позволява на бутон да се премести под текста на тесни екрани */
+//     background:#f39c12;
+//     color:white;
+//     padding:10px;
+//     border-radius:8px;
+//     margin-bottom:10px;
+//     font-weight:bold;
+//     text-align: center; /* хоризонтално центриране на текста */
+// ">
+// <span style="
+//     flex: 1; /* заема цялото налично пространство */
+//     display: flex;
+//     justify-content: center; /* хоризонтално центриране */
+//     align-items: center; /* вертикално центриране */
+// ">✏️ Редактираш оферта</span>
+// <button onclick="cancelEdit()" style="
+//     background:#e74c3c;
+//     color:white;
+//     border:none;
+//     border-radius:5px;
+//     padding:5px 8px;
+//     cursor:pointer;
+//     margin-top:5px; /* когато се премести на нов ред */
+// ">❌ Откажи</button>
+// </div>
+// `;
+if (!offer) {
+    document.getElementById("editMode").innerHTML = "";
+    return;
+}
+
+}
+
+function cancelEdit() {
+      editingOfferId = null;
+    items = [];
+    
+
+    document.getElementById("clientName").value = "";
+    document.getElementById("clientAddress").value = "";
+    document.getElementById("note").value = "";
+    document.getElementById("qty").value = 1; // ако искаш да върнеш по подразбиране
+    
+    document.getElementById("total").innerText = "0";
+    document.getElementById("list").innerHTML = "";
+    document.getElementById("editMode").innerHTML = "";
+
+    // editingOfferId = null;
+
+    // document.getElementById("editMode").innerHTML = "";
+
+    // items = [];
+
+    // render();
+
+    // saveData();
 }
 
     function getColor(cat) {
@@ -751,3 +1022,8 @@ loadCategories();
 
 </body>
 </html>
+ 
+
+
+   
+   
