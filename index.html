@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Оферти CRM</title>
 
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <link rel="manifest" href="manifest.json">
@@ -15,9 +14,7 @@
     * {
   box-sizing: border-box;
 }
-/* .row > * {
-  min-width: 0;
-} */
+
 body { font-family: Arial; padding:20px; background:#f5f5f5; }
 
 .row { display:flex; gap:10px; margin-bottom:10px; }
@@ -35,14 +32,14 @@ body {
     background: #f5f5f5;
 }
 
-/* desktop row */
+
 .row {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
 }
 
-/* inputs */
+
 select, input, textarea {
     padding: 8px;
     width: 100%;
@@ -62,7 +59,7 @@ button {
     cursor: pointer;
     /* margin-top: 10px;
     width: auto; */
-    width: 100%;
+    /* width: 100%; */
 }
 
 .total {
@@ -71,65 +68,8 @@ button {
     margin-top: 20px;
 }
 
-/* 🔥 MOBILE VIEW */
-/* @media (max-width: 400px) {
-
-    body {
-        padding: 10px;
-    }
-
-    h2 {
-        font-size: 18px;
-        text-align: center;
-        margin-bottom: 10px;
-    } */
-
-    /* 🔥 IMPORTANT FIX: row stacking clean */
-    /* .row {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    select, input, textarea {
-        width: 100%;
-        font-size: 14px;
-        padding: 10px;
-        border-radius: 8px;
-        box-sizing: border-box;
-    } */
-
-    /* 🔥 FIX BUTTON ALIGNMENT */
-    /* .row button {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        border-radius: 8px;
-        background: #2c3e50;
-        color: white;
-        border: none;
-    } */
-
-    /* cards */
-    /* .card {
-        padding: 10px;
-        font-size: 13px;
-        border-radius: 10px;
-    } */
-
-    /* total */
-    /* .total {
-        font-size: 16px;
-        text-align: center;
-    } */
-
-    /* prevent overlap with FAB */
-    /* #list {
-        padding-bottom: 90px;
-    } */
-/* } */
 .card {
-    /* display: flex; */
+    display: flex; 
     justify-content: space-between;
     align-items: center;
     gap: 10px;
@@ -156,8 +96,6 @@ button {
 
 html,
 body {
-    /* margin: 0;
-    padding: 0; */
     overflow-x: hidden;
     max-width: 100%;
     background: #f5f5f5;
@@ -283,16 +221,54 @@ body {
 
 <button onclick="generatePDF()">📄 Генерирай PDF</button>
 <button onclick="newOffer()">➕ Нова оферта</button>
+<button onclick="saveOffer()">💾 Запази оферта</button>
+<h3>📚 История</h3>
+<div id="history"></div>
 
 <script>
     let prices = {};
 let items = [];
 
+// fetch('./prices.json')
+// .then(r => r.json())
+// .then(data => {
+//     prices = data;
+//     loadCategories();
+// });
+function loadSavedData() {
+
+    const saved =
+        localStorage.getItem("crm_offer");
+
+    if (!saved) return;
+
+    const data = JSON.parse(saved);
+
+    items = data.items || [];
+
+    document.getElementById("clientName").value =
+        data.clientName || "";
+
+    document.getElementById("clientAddress").value =
+        data.clientAddress || "";
+
+    document.getElementById("note").value =
+        data.note || "";
+
+    render();
+}
 fetch('./prices.json')
 .then(r => r.json())
 .then(data => {
+
     prices = data;
+
     loadCategories();
+
+    loadSavedData();
+
+    renderHistory();
+
 });
 
 
@@ -338,23 +314,7 @@ function add() {
     render();
 }
 
-// function render() {
-//     let list = document.getElementById("list");
-//     list.innerHTML = "";
 
-//     let total = 0;
-
-//     items.forEach(i => {
-//         total += i.qty * i.price;
-
-//         list.innerHTML += `
-//         <div class="card">
-//             ${i.cat} → ${i.sub} | ${i.qty} × ${i.price} = ${i.qty * i.price} лв
-//         </div>`;
-//     });
-
-//     document.getElementById("total").innerText = total;
-// }
 function removeItem(index) {
     items.splice(index, 1);
     render();
@@ -370,19 +330,7 @@ function render() {
     items.forEach((i, index) => {
         total += i.qty * i.price;
 
-        // list.innerHTML += `
-        // <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
-            
-        //     <div>
-        //         ${i.cat} → ${i.sub} | ${i.qty} × ${i.price} = ${i.qty * i.price} лв
-        //     </div>
 
-        //     <button onclick="removeItem(${index})" 
-        //         style="background:red;color:white;border:none;padding:6px 10px;cursor:pointer;">
-        //         🗑
-        //     </button>
-
-        // </div>`;
         list.innerHTML += `
 <div class="card">
 
@@ -409,84 +357,6 @@ function arrayBufferToBase64(buffer) {
 }
 
 
-// function generatePDF() {
-
-//     let clientName = document.getElementById("clientName").value || "-";
-//     let clientAddress = document.getElementById("clientAddress").value || "-";
-//     let note = document.getElementById("note").value || "";
-
-//     let today = new Date();
-//     let dateStr = today.toLocaleDateString("bg-BG");
-//     let offerNumber = "OF-" + Date.now();
-
-//     let grouped = {};
-//     let categoryTotals = {};
-//     let total = 0;
-
-
-//     items.forEach(i => {
-//         if (!grouped[i.cat]) grouped[i.cat] = [];
-//         grouped[i.cat].push(i);
-
-//         if (!categoryTotals[i.cat]) categoryTotals[i.cat] = 0;
-//         categoryTotals[i.cat] += i.qty * i.price;
-
-//         total += i.qty * i.price;
-//     });
-
-//     let content = [];
-
-//     // 🏢 HEADER
-//     content.push({ text: 'ТА ЕНД КО "ЕООД"', style: 'header', alignment: 'center' });
-//     content.push({ text: 'СТРОИТЕЛНИ И РЕМОНТНИ ДЕЙНОСТИ', alignment: 'center' });
-//   content.push({ text: 'Оферта №: ' + offerNumber,  alignment: 'center' });
-//   content.push({ text:  'Дата: ' + dateStr,  alignment: 'center'});
-//     content.push({ text: '\nКлиент: ' + clientName });
-//     content.push({ text: 'Адрес: ' + clientAddress });
-  
-
-//     content.push({ text: '\n' });
-
-//     // 📦 СЕКЦИИ
-//     Object.keys(grouped).forEach(cat => {
-
-//         content.push({
-//             text: cat,
-//             style: 'cat',
-//             margin: [0, 10, 0, 5]
-//         });
-
-//         grouped[cat].forEach(i => {
-//             content.push({
-//                 text: `• ${i.sub} | ${i.qty} × ${i.price} = ${i.qty * i.price} лв`,
-                
-//             });
-//         });
-
-//         content.push({
-//             text: `Общо за ${cat}: ${categoryTotals[cat].toFixed(2)} лв`,
-//             bold: true,
-//              fontSize: 14,
-    
-//         });
-//     });
-
-//     content.push({ text: '\nОБЩА СУМА: ' + total.toFixed(2) + ' лв', bold: true, fontSize: 14 , alignment: 'center'});
-
-//     if (note.trim() !== "") {
-//         content.push({ text: '\nЗабележка: ' + note,
-            
-//          });
-//     }
-    // 📄 DOCUMENT
-//     pdfMake.createPdf({
-//         content: content,
-//         styles: {
-//             header: { fontSize: 16, bold: true },
-//             cat: { fontSize: 13, bold: true, color: 'blue' }
-//         }
-//     }).download(offerNumber + ".pdf");
-// }
 function generatePDF() {
 
     let clientName = document.getElementById("clientName").value || "-";
@@ -618,15 +488,6 @@ function generatePDF() {
         });
     }
 
-    // 📄 PDF
-    // pdfMake.createPdf({
-    //     content: content,
-    //     styles: {
-    //         header: { fontSize: 18, bold: true },
-    //         tableHeader: { bold: true, fillColor: '#2c3e50', color: 'white' },
-    //         total: { fontSize: 14, bold: true }
-    //     }
-    // }).download(offerNumber + ".pdf");
     pdfMake.createPdf({
     pageSize: 'A4',
     pageMargins: [20, 20, 20, 20],
@@ -681,7 +542,130 @@ function newOffer() {
     document.getElementById("total").innerText = "0";
 }
 
-// 
+function saveOffer() {
+
+    if (items.length === 0) {
+        alert("Няма артикули");
+        return;
+    }
+
+    let history =
+        JSON.parse(localStorage.getItem("crm_history")) || [];
+
+    const offer = {
+
+        id: Date.now(),
+
+        date: new Date().toLocaleString("bg-BG"),
+
+        clientName:
+            document.getElementById("clientName").value || "-",
+
+        clientAddress:
+            document.getElementById("clientAddress").value || "-",
+
+        note:
+            document.getElementById("note").value || "",
+
+        items: [...items]
+    };
+
+    history.unshift(offer);
+
+    localStorage.setItem(
+        "crm_history",
+        JSON.stringify(history)
+    );
+
+    renderHistory();
+
+    alert("Офертата е запазена");
+}
+function renderHistory() {
+
+    let history =
+        JSON.parse(localStorage.getItem("crm_history")) || [];
+
+    let box = document.getElementById("history");
+
+    box.innerHTML = "";
+
+    history.forEach(o => {
+
+        box.innerHTML += `
+
+        <div class="card">
+
+            <div class="card-content">
+
+                <b>${o.clientName}</b><br>
+
+                ${o.date}<br>
+
+                ${o.items.length} артикула
+
+            </div>
+
+            <div style="display:flex;gap:5px;">
+
+                <button onclick="loadOffer(${o.id})">
+                📂
+                </button>
+
+                <button onclick="deleteOffer(${o.id})"
+                class="delete-btn">
+                🗑
+                </button>
+
+            </div>
+
+        </div>
+        `;
+    });
+}
+
+function loadOffer(id) {
+
+    let history =
+        JSON.parse(localStorage.getItem("crm_history")) || [];
+
+    let offer =
+        history.find(o => o.id === id);
+
+    if (!offer) return;
+
+    items = offer.items;
+
+    document.getElementById("clientName").value =
+        offer.clientName;
+
+    document.getElementById("clientAddress").value =
+        offer.clientAddress;
+
+    document.getElementById("note").value =
+        offer.note;
+
+    render();
+
+    saveData();
+}
+function deleteOffer(id) {
+
+    if (!confirm("Изтриване?")) return;
+
+    let history =
+        JSON.parse(localStorage.getItem("crm_history")) || [];
+
+    history =
+        history.filter(o => o.id !== id);
+
+    localStorage.setItem(
+        "crm_history",
+        JSON.stringify(history)
+    );
+
+    renderHistory();
+}
 
     function getColor(cat) {
         switch(cat.toLowerCase()) {
