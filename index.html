@@ -15,9 +15,9 @@
     * {
   box-sizing: border-box;
 }
-.row > * {
+/* .row > * {
   min-width: 0;
-}
+} */
 body { font-family: Arial; padding:20px; background:#f5f5f5; }
 
 .row { display:flex; gap:10px; margin-bottom:10px; }
@@ -26,7 +26,7 @@ select, input, textarea { padding:8px; width:100%; }
 
 .card { background:white; padding:15px; margin-top:10px; }
 
-button { padding:10px; cursor:pointer; margin-top:10px; }
+button { padding:10px; cursor:pointer; }
 
 .total { font-size:20px; text-align:right; margin-top:20px; }
 body {
@@ -47,7 +47,7 @@ select, input, textarea {
     padding: 8px;
     width: 100%;
     box-sizing: border-box;
-      font-size: 16px;
+    font-size: 16px;
 }
 
 .card {
@@ -58,10 +58,11 @@ select, input, textarea {
 }
 
 button {
-    padding: 10px;
+    padding: 8px;
     cursor: pointer;
-    margin-top: 10px;
-    width: auto;
+    /* margin-top: 10px;
+    width: auto; */
+    width: 100%;
 }
 
 .total {
@@ -128,7 +129,7 @@ button {
     } */
 /* } */
 .card {
-    display: flex;
+    /* display: flex; */
     justify-content: space-between;
     align-items: center;
     gap: 10px;
@@ -155,8 +156,8 @@ button {
 
 html,
 body {
-    margin: 0;
-    padding: 0;
+    /* margin: 0;
+    padding: 0; */
     overflow-x: hidden;
     max-width: 100%;
     background: #f5f5f5;
@@ -196,7 +197,7 @@ body {
     select,
     input,
     textarea {
-        font-size: 14px;
+        font-size: 16px;
         padding: 10px;
         border-radius: 8px;
         border: 1px solid #ccc;
@@ -281,6 +282,7 @@ body {
 </div>
 
 <button onclick="generatePDF()">📄 Генерирай PDF</button>
+<button onclick="newOffer()">➕ Нова оферта</button>
 
 <script>
     let prices = {};
@@ -357,6 +359,8 @@ function removeItem(index) {
     items.splice(index, 1);
     render();
 }
+
+
 function render() {
     let list = document.getElementById("list");
     list.innerHTML = "";
@@ -648,8 +652,34 @@ function generatePDF() {
         }
     }
 }).download(offerNumber + ".pdf");
+
 }
-    
+
+function newOffer() {
+
+    if (!confirm("Сигурен ли си, че искаш нова оферта?")) return;
+
+    items = [];
+    render();
+
+    document.getElementById("clientName").value = "";
+    document.getElementById("clientAddress").value = "";
+    document.getElementById("note").value = "";
+
+    qty = 1;
+
+    let qtyEl = document.getElementById("qty");
+
+    if (qtyEl) {
+        if (qtyEl.tagName !== "INPUT" && qtyEl.tagName !== "SELECT") {
+            qtyEl.innerText = qty;
+        } else {
+            qtyEl.value = qty;
+        }
+    }
+
+    document.getElementById("total").innerText = "0";
+}
 
 // 
 
