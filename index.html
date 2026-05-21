@@ -1,453 +1,451 @@
-
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8">
-<title>Оферти CRM</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-<link rel="manifest" href="manifest.json">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<style>
-    * {
-  box-sizing: border-box;
-}
-
-body { font-family: Arial; padding:20px; background:#f5f5f5; }
-
-.row { display:flex; gap:10px; margin-bottom:10px; }
-
-select, input, textarea { padding:8px; width:100%; }
-
-.card { background:white; padding:15px; margin-top:10px; }
-
-button { padding:10px; cursor:pointer; }
-
-.total { font-size:20px; text-align:right; margin-top:20px; }
-body {
-    font-family: Arial;
-    padding: 20px;
-    background: #f5f5f5;
-}
-
-
-.row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-
-select, input, textarea {
-    padding: 8px;
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
-.card {
-    background: white;
-    padding: 15px;
-    margin-top: 10px;
-    border-radius: 8px;
-}
-
-button {
-    padding: 8px;
-    cursor: pointer;
-    /* margin-top: 10px;
-    width: auto; */
-    /* width: 100%; */
-}
-
-.total {
-    font-size: 20px;
-    text-align: right;
-    margin-top: 20px;
-}
-
-.card {
-    display: flex; 
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-}
-
-.card-content {
-    flex: 1;
-    word-break: break-word;
-}
-
-.delete-btn {
-    width: 36px !important;
-    min-width: 36px;
-    height: 36px;
-    padding: 0 !important;
-    border-radius: 8px;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    font-size: 16px;
-    flex-shrink: 0;
-}
-
-#editMode {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.form-card {
-    display: flex;
-    flex-direction: column;
-}
-
-input.manual-input,
-input[type="number"],
-input[type="text"],
-textarea{
-    padding: 8px;
-    font-size: 16px;
-    border-radius: 6px;
-    height: 36px; /* фиксирана височина за input */
-    max-height: 40px;
-    box-sizing: border-box;
-}
-
-
-/* За textarea (ръчно въвеждане на услуга/цена) */
-textarea.manual-input {
-    height: auto; /* ще се разширява с текст, но не прекалено */
-    min-height: 36px;
-    max-height: 80px;
-}
- 
-.manual-add {
-    padding: 0;
-    padding-left: 0.8em;
-    padding-right: 0.8em;
-}
-html,
-body {
-    overflow-x: hidden;
-    max-width: 100%;
-    background: #f5f5f5;
-}
-
-@media (max-width: 400px) {
-
-    body {
-        padding: 10px;
-         overflow-x: hidden;
-    }
-
-    h2 {
-        font-size: 18px;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-    /* 🔥 ROW FIX */
-    .row {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-    }
-
-    /* 🔥 INPUT FIX */
-    select,
-    input,
-    textarea,
-    button {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-
-    select,
-    input,
-    textarea {
-        font-size: 16px;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-    }
-
-    /* 🔥 BUTTON FIX */
-    .row button {
-        padding: 12px;
-        font-size: 16px;
-        border-radius: 8px;
-        background: #2c3e50;
-        color: white;
-        border: none;
-    }
-
-    /* 🔥 CARD FIX */
-    .card {
-        width: 100%;
-        padding: 10px;
-        font-size: 13px;
-        border-radius: 10px;
-        overflow: hidden;
-        word-break: break-word;
-    }
-
-    /* 🔥 TOTAL */
-    .total {
-        font-size: 16px;
-        text-align: center;
-    }
-
-    /* 🔥 LIST PADDING */
-    #list {
-        padding-bottom: 90px;
-    }
-
-    /* 🔥 FLOATING BUTTON FIX */
-    .fab {
-        width: 55px;
-        height: 55px;
-        right: 15px;
-        bottom: 15px;
-    }
-
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Оферти CRM</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body { font-family: Arial; padding:20px; background:#f5f5f5; }
+        
+        .row { display:flex; gap:10px; margin-bottom:10px; }
+        
+        select, input, textarea { padding:8px; width:100%; }
+        
+        .card { background:white; padding:15px; margin-top:10px; }
+        
+        button { padding:10px; cursor:pointer; }
+        
+        .total { font-size:20px; text-align:right; margin-top:20px; }
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        
+        select, input, textarea {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        .card {
+            background: white;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+        
+        button {
+            padding: 8px;
+            cursor: pointer;
+            /* margin-top: 10px;
+            width: auto; */
+            /* width: 100%; */
+        }
+        
+        .total {
+            font-size: 20px;
+            text-align: right;
+            margin-top: 20px;
+        }
+        
+        .card {
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-content {
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .delete-btn {
+            width: 36px !important;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 !important;
+            border-radius: 8px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        #editMode {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .form-card {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        input.manual-input,
+        input[type="number"],
+        input[type="text"],
+        textarea{
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 6px;
+            height: 36px; /* фиксирана височина за input */
+            max-height: 40px;
+            box-sizing: border-box;
+        }
+        
+        
+        /* За textarea (ръчно въвеждане на услуга/цена) */
+        textarea.manual-input {
+            height: auto; /* ще се разширява с текст, но не прекалено */
+            min-height: 36px;
+            max-height: 80px;
+        }
+        
+        .manual-add {
+            padding: 0;
+            padding-left: 0.8em;
+            padding-right: 0.8em;
+        }
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100%;
+            background: #f5f5f5;
+        }
+        
+        @media (max-width: 400px) {
+            
+            body {
+                padding: 10px;
+                overflow-x: hidden;
+            }
+            
+            h2 {
+                font-size: 18px;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            
+            /* 🔥 ROW FIX */
+            .row {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                width: 100%;
+            }
+            
+            /* 🔥 INPUT FIX */
+            select,
+            input,
+            textarea,
+            button {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            select,
+            input,
+            textarea {
+                font-size: 16px;
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+            }
+            
+            /* 🔥 BUTTON FIX */
+            .row button {
+                padding: 12px;
+                font-size: 16px;
+                border-radius: 8px;
+                background: #2c3e50;
+                color: white;
+                border: none;
+            }
+            
+            /* 🔥 CARD FIX */
+            .card {
+                width: 100%;
+                padding: 10px;
+                font-size: 13px;
+                border-radius: 10px;
+                overflow: hidden;
+                word-break: break-word;
+            }
+            
+            /* 🔥 TOTAL */
+            .total {
+                font-size: 16px;
+                text-align: center;
+            }
+            
+            /* 🔥 LIST PADDING */
+            #list {
+                padding-bottom: 90px;
+            }
+            
+            /* 🔥 FLOATING BUTTON FIX */
+            .fab {
+                width: 55px;
+                height: 55px;
+                right: 15px;
+                bottom: 15px;
+            }
+            
+        }
+    </style>
 </head>
 
 <body>
-
-<h2>📄 Генератор на оферти (CRM)</h2>
-<div id="editMode">
-</div>
-
-<div class="card form-card">
- 
-    <div class="row">
-
-        <select id="category" onchange="loadSub()"></select>
-
-        <select id="sub"></select>
-
-        <input type="number"
-               id="qty"
-               placeholder="Количество">
-
-        <button onclick="add()">Добави</button>
-
+    
+    <h2>📄 Генератор на оферти (CRM)</h2>
+    <div id="editMode">
     </div>
-
-
-<div class="row">
-
-    <input type="text"
-           id="customCategory"
-           placeholder="Категория">
-
-    <input type="text"
-           id="customService"
-           placeholder="Услуга">
-
-    <input type="number"
-           id="customQty"
-           placeholder="Кол.">
-
-    <input type="number"
-           id="customPrice"
-           placeholder="Цена">
-
-    <button class="manual-add" onclick="addCustom()">
-        ➕ Ръчно
-    </button>
-
-</div>
-
-</div>
-
-<div id="list"></div>
-
-<div class="total">
-Общо: <span id="total">0</span> евро
-</div>
-
-<!-- 👤 CLIENT -->
-<div style="margin-top:15px;">
-<label><b>Клиент:</b></label>
-<input type="text" id="clientName">
-
-<label><b>Адрес:</b></label>
-<input type="text" id="clientAddress">
-</div>
-
-<!-- 📝 NOTE -->
-<div style="margin-top:15px;">
-<label><b>Забележка:</b></label>
-<textarea id="note" rows="3"></textarea>
-</div>
-
-<button onclick="generatePDF()">📄 Генерирай PDF</button>
-<button onclick="newOffer()">➕ Нова оферта</button>
-<button onclick="saveOffer()">💾 Запази оферта</button>
-<h3>📚 История</h3>
-<div id="history"></div>
-
-<script>
-let prices = {};
-let items = [];
-let editingOfferId = null;
-let qty = 1;
-
-
-function loadSavedData() {
-
-    const saved =
-        localStorage.getItem("crm_offer");
-
-    if (!saved) return;
-
-    const data = JSON.parse(saved);
-
-    items = data.items || [];
-
-    document.getElementById("clientName").value =
-        data.clientName || "";
-
-    document.getElementById("clientAddress").value =
-        data.clientAddress || "";
-
-    document.getElementById("note").value =
-        data.note || "";
-
-    render();
-}
-fetch('./prices.json')
-.then(r => r.json())
-.then(data => {
-
-    prices = data;
-
-    loadCategories();
-
-    loadSavedData();
-
-    renderHistory();
-
-});
-
-
-
-
-function loadCategories() {
-    let cat = document.getElementById("category");
-    cat.innerHTML = "";
-
-    Object.keys(prices).forEach(c => {
-        let opt = document.createElement("option");
-        opt.value = c;
-        opt.innerText = c;
-        cat.appendChild(opt);
-    });
-
-    loadSub();
-}
-
-function loadSub() {
-    let cat = document.getElementById("category").value;
-    let sub = document.getElementById("sub");
-
-    sub.innerHTML = "";
-
-    Object.keys(prices[cat]).forEach(s => {
-        let opt = document.createElement("option");
-        opt.value = s;
-        opt.innerText = s + " (" + prices[cat][s] + " евро)";
-        sub.appendChild(opt);
-    });
-}
-
-function add() {
-    let cat = document.getElementById("category").value;
-    let sub = document.getElementById("sub").value;
-    let qty = parseFloat(document.getElementById("qty").value || 0);
-
-    let price = prices[cat][sub];
-
-    items.push({ cat, sub, qty, price });
-
-    render();
-}
-
-function addCustom() {
-
-    let category =
-        document.getElementById("customCategory").value;
-
-    let service =
-        document.getElementById("customService").value;
-
-    let qty =
-        parseFloat(
+    
+    <div class="card form-card">
+        
+        <div class="row">
+            
+            <select id="category" onchange="loadSub()"></select>
+            
+            <select id="sub"></select>
+            
+            <input type="number"
+            id="qty"
+            placeholder="Количество">
+            
+            <button onclick="add()">Добави</button>
+            
+        </div>
+        
+        
+        <div class="row">
+            
+            <input type="text"
+            id="customCategory"
+            placeholder="Категория">
+            
+            <input type="text"
+            id="customService"
+            placeholder="Услуга">
+            
+            <input type="number"
+            id="customQty"
+            placeholder="Кол.">
+            
+            <input type="number"
+            id="customPrice"
+            placeholder="Цена">
+            
+            <button class="manual-add" onclick="addCustom()">
+                ➕ Ръчно
+            </button>
+            
+        </div>
+        
+    </div>
+    
+    <div id="list"></div>
+    
+    <div class="total">
+        Общо: <span id="total">0</span> евро
+    </div>
+    
+    <!-- 👤 CLIENT -->
+    <div style="margin-top:15px;">
+        <label><b>Клиент:</b></label>
+        <input type="text" id="clientName">
+        
+        <label><b>Адрес:</b></label>
+        <input type="text" id="clientAddress">
+    </div>
+    
+    <!-- 📝 NOTE -->
+    <div style="margin-top:15px;">
+        <label><b>Забележка:</b></label>
+        <textarea id="note" rows="3"></textarea>
+    </div>
+    
+    <button onclick="generatePDF()">📄 Генерирай PDF</button>
+    <button onclick="newOffer()">➕ Нова оферта</button>
+    <button onclick="saveOffer()">💾 Запази оферта</button>
+    <h3>📚 История</h3>
+    <div id="history"></div>
+    
+    <script>
+        let prices = {};
+        let items = [];
+        let editingOfferId = null;
+        let qty = 1;
+        
+        
+        function loadSavedData() {
+            
+            const saved =
+            localStorage.getItem("crm_offer");
+            
+            if (!saved) return;
+            
+            const data = JSON.parse(saved);
+            
+            items = data.items || [];
+            
+            document.getElementById("clientName").value =
+            data.clientName || "";
+            
+            document.getElementById("clientAddress").value =
+            data.clientAddress || "";
+            
+            document.getElementById("note").value =
+            data.note || "";
+            
+            render();
+        }
+        fetch('./prices.json')
+        .then(r => r.json())
+        .then(data => {
+            
+            prices = data;
+            
+            loadCategories();
+            
+            loadSavedData();
+            
+            renderHistory();
+            
+        });
+        
+        
+        
+        
+        function loadCategories() {
+            let cat = document.getElementById("category");
+            cat.innerHTML = "";
+            
+            Object.keys(prices).forEach(c => {
+                let opt = document.createElement("option");
+                opt.value = c;
+                opt.innerText = c;
+                cat.appendChild(opt);
+            });
+            
+            loadSub();
+        }
+        
+        function loadSub() {
+            let cat = document.getElementById("category").value;
+            let sub = document.getElementById("sub");
+            
+            sub.innerHTML = "";
+            
+            Object.keys(prices[cat]).forEach(s => {
+                let opt = document.createElement("option");
+                opt.value = s;
+                opt.innerText = s + " (" + prices[cat][s] + " евро)";
+                sub.appendChild(opt);
+            });
+        }
+        
+        function add() {
+            let cat = document.getElementById("category").value;
+            let sub = document.getElementById("sub").value;
+            let qty = parseFloat(document.getElementById("qty").value || 0);
+            
+            let price = prices[cat][sub];
+            
+            items.push({ cat, sub, qty, price });
+            
+            render();
+        }
+        
+        function addCustom() {
+            
+            let category =
+            document.getElementById("customCategory").value;
+            
+            let service =
+            document.getElementById("customService").value;
+            
+            let qty =
+            parseFloat(
             document.getElementById("customQty").value || 1
-        );
-
-    let price =
-        parseFloat(
+            );
+            
+            let price =
+            parseFloat(
             document.getElementById("customPrice").value || 0
-        );
-
-    if (!category || !service || qty <= 0 || price <= 0) {
-
-        alert("Попълни всички полета");
-
-        return;
-    }
-
-    items.push({
-
-        cat: category,
-
-        sub: service,
-
-        qty: qty,
-
-        price: price
-    });
-
-    render();
-
-    // clear fields
-    document.getElementById("customCategory").value = "";
-
-    document.getElementById("customService").value = "";
-
-    document.getElementById("customQty").value = "";
-
-    document.getElementById("customPrice").value = "";
-}
-
-function removeItem(index) {
-    items.splice(index, 1);
-    render();
-}
-
-
-function render() {
-    let list = document.getElementById("list");
-    list.innerHTML = "";
-
-    let total = 0;
-
-    items.forEach((i, index) => {
-        total += i.qty * i.price;
-
-
-        list.innerHTML += `
+            );
+            
+            if (!category || !service || qty <= 0 || price <= 0) {
+                
+                alert("Попълни всички полета");
+                
+                return;
+            }
+            
+            items.push({
+                
+                cat: category,
+                
+                sub: service,
+                
+                qty: qty,
+                
+                price: price
+            });
+            
+            render();
+            
+            // clear fields
+            document.getElementById("customCategory").value = "";
+            
+            document.getElementById("customService").value = "";
+            
+            document.getElementById("customQty").value = "";
+            
+            document.getElementById("customPrice").value = "";
+        }
+        
+        function removeItem(index) {
+            items.splice(index, 1);
+            render();
+        }
+        
+        
+        function render() {
+            let list = document.getElementById("list");
+            list.innerHTML = "";
+            
+            let total = 0;
+            
+            items.forEach((i, index) => {
+                total += i.qty * i.price;
+                
+                
+                list.innerHTML += `
 <div class="card">
 
     <div class="card-content">
@@ -459,305 +457,305 @@ function render() {
     </button>
 
 </div>`;
-    });
-
-    document.getElementById("total").innerText = total;
-}
-function arrayBufferToBase64(buffer) {
-    let binary = '';
-    let bytes = new Uint8Array(buffer);
-    for (let i = 0; i < bytes.byteLength; i++) {
-        binary += String.fromCharCode(bytes[i]);
-    }
-    return window.btoa(binary);
-}
-
-
-function generatePDF() {
-
-    let clientName = document.getElementById("clientName").value || "-";
-    let clientAddress = document.getElementById("clientAddress").value || "-";
-    let note = document.getElementById("note").value || "";
-
-    let today = new Date();
-    let dateStr = today.toLocaleDateString("bg-BG");
-    let offerNumber = "OF-" + Date.now();
-
-    let grouped = {};
-    let categoryTotals = {};
-    let total = 0;
-
-    items.forEach(i => {
-        if (!grouped[i.cat]) grouped[i.cat] = [];
-        grouped[i.cat].push(i);
-
-        if (!categoryTotals[i.cat]) categoryTotals[i.cat] = 0;
-        categoryTotals[i.cat] += i.qty * i.price;
-
-        total += i.qty * i.price;
-    });
-
-    let content = [];
-
-    // 🏢 HEADER
-    content.push({
-        text: 'ТА ЕНД КО "ЕООД"',
-        style: 'header',
-        alignment: 'center',
-        margin: [0, 0, 0, 5]
-    });
-
-    content.push({
-        text: 'СТРОИТЕЛНИ И РЕМОНТНИ ДЕЙНОСТИ',
-        alignment: 'center',
-        margin: [0, 0, 0, 10]
-    });
-
-    content.push({
-        text: `ОФЕРТА №: ${offerNumber}`,
-        alignment: 'center'
-    });
-
-    content.push({
-        text: `Дата: ${dateStr}`,
-        alignment: 'center',
-        margin: [0, 0, 0, 10]
-    });
-
-    // 👤 CLIENT BOX
-    content.push({
-        table: {
-            widths: ['*'],
-            body: [
-                [
+            });
+            
+            document.getElementById("total").innerText = total;
+        }
+        function arrayBufferToBase64(buffer) {
+            let binary = '';
+            let bytes = new Uint8Array(buffer);
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+        
+        
+        function generatePDF() {
+            
+            let clientName = document.getElementById("clientName").value || "-";
+            let clientAddress = document.getElementById("clientAddress").value || "-";
+            let note = document.getElementById("note").value || "";
+            
+            let today = new Date();
+            let dateStr = today.toLocaleDateString("bg-BG");
+            let offerNumber = "OF-" + Date.now();
+            
+            let grouped = {};
+            let categoryTotals = {};
+            let total = 0;
+            
+            items.forEach(i => {
+                if (!grouped[i.cat]) grouped[i.cat] = [];
+                grouped[i.cat].push(i);
+                
+                if (!categoryTotals[i.cat]) categoryTotals[i.cat] = 0;
+                categoryTotals[i.cat] += i.qty * i.price;
+                
+                total += i.qty * i.price;
+            });
+            
+            let content = [];
+            
+            // 🏢 HEADER
+            content.push({
+                text: 'ТА ЕНД КО "ЕООД"',
+                style: 'header',
+                alignment: 'center',
+                margin: [0, 0, 0, 5]
+            });
+            
+            content.push({
+                text: 'СТРОИТЕЛНИ И РЕМОНТНИ ДЕЙНОСТИ',
+                alignment: 'center',
+                margin: [0, 0, 0, 10]
+            });
+            
+            content.push({
+                text: `ОФЕРТА №: ${offerNumber}`,
+                alignment: 'center'
+            });
+            
+            content.push({
+                text: `Дата: ${dateStr}`,
+                alignment: 'center',
+                margin: [0, 0, 0, 10]
+            });
+            
+            // 👤 CLIENT BOX
+            content.push({
+                table: {
+                    widths: ['*'],
+                    body: [
+                    [
                     {
                         text: `Клиент: ${clientName}\nАдрес: ${clientAddress}`,
                         margin: [10, 5, 10, 5]
                     }
-                ]
-            ]
-        },
-        layout: 'lightHorizontalLines',
-        margin: [0, 0, 0, 10]
-    });
-
-    // 📦 ITEMS TABLE (PREMIUM)
-    let tableBody = [
-        [
+                    ]
+                    ]
+                },
+                layout: 'lightHorizontalLines',
+                margin: [0, 0, 0, 10]
+            });
+            
+            // 📦 ITEMS TABLE (PREMIUM)
+            let tableBody = [
+            [
             { text: 'Категория', style: 'tableHeader' },
             { text: 'Описание', style: 'tableHeader' },
             { text: 'Кол.', style: 'tableHeader' },
             { text: 'Ед. цена', style: 'tableHeader' },
             { text: 'Общо', style: 'tableHeader' }
-        ]
-    ];
-
-    Object.keys(grouped).forEach(cat => {
-
-        grouped[cat].forEach((i, index) => {
-
-            tableBody.push([
-                index === 0 ? { text: cat, rowSpan: grouped[cat].length, bold: true } : {},
-                i.sub,
-                i.qty,
-                i.price.toFixed(2),
-                (i.qty * i.price).toFixed(2)
-            ]);
-        });
-
-        // tableBody.push([
-        //     { text: `Общо за ${cat}`, colSpan: 4, bold: true, alignment: 'right' },
-        //     {},
-        //     {},
-        //     {},
-        //     { text: categoryTotals[cat].toFixed(2), bold: true }
-        // ]);
-
-    });
-
-    content.push({
-        table: {
-            headerRows: 1,
-            widths: ['*', '*', 40, 60, 70],
-            body: tableBody
-        },
-        layout: {
-            fillColor: function (rowIndex) {
-                return rowIndex === 0 ? '#eeeeee' : null;
+            ]
+            ];
+            
+            Object.keys(grouped).forEach(cat => {
+                
+                grouped[cat].forEach((i, index) => {
+                    
+                    tableBody.push([
+                    index === 0 ? { text: cat, rowSpan: grouped[cat].length, bold: true } : {},
+                    i.sub,
+                    i.qty,
+                    i.price.toFixed(2),
+                    (i.qty * i.price).toFixed(2)
+                    ]);
+                });
+                
+                // tableBody.push([
+                //     { text: `Общо за ${cat}`, colSpan: 4, bold: true, alignment: 'right' },
+                //     {},
+                //     {},
+                //     {},
+                //     { text: categoryTotals[cat].toFixed(2), bold: true }
+                // ]);
+                
+            });
+            
+            content.push({
+                table: {
+                    headerRows: 1,
+                    widths: ['*', '*', 40, 60, 70],
+                    body: tableBody
+                },
+                layout: {
+                    fillColor: function (rowIndex) {
+                        return rowIndex === 0 ? '#eeeeee' : null;
+                    }
+                }
+            });
+            
+            // 💰 TOTAL
+            content.push({
+                text: `\nОБЩА СУМА: ${total.toFixed(2)} евро`,
+                style: 'total',
+                alignment: 'right',
+                margin: [0, 10, 0, 10]
+            });
+            
+            // 📝 NOTE
+            if (note.trim() !== "") {
+                content.push({
+                    text: `Забележка: ${note}`,
+                    margin: [0, 10, 0, 0]
+                });
             }
+            
+            pdfMake.createPdf({
+                pageSize: 'A4',
+                pageMargins: [20, 20, 20, 20],
+                pageOrientation: 'portrait',
+                
+                content: content,
+                
+                styles: {
+                    header: {
+                        fontSize: 18,
+                        bold: true
+                    },
+                    
+                    tableHeader: {
+                        bold: true,
+                        fillColor: '#2c3e50',
+                        color: 'white'
+                    },
+                    
+                    total: {
+                        fontSize: 14,
+                        bold: true
+                    }
+                }
+            }).download(offerNumber + ".pdf");
+            
         }
-    });
-
-    // 💰 TOTAL
-    content.push({
-        text: `\nОБЩА СУМА: ${total.toFixed(2)} евро`,
-        style: 'total',
-        alignment: 'right',
-        margin: [0, 10, 0, 10]
-    });
-
-    // 📝 NOTE
-    if (note.trim() !== "") {
-        content.push({
-            text: `Забележка: ${note}`,
-            margin: [0, 10, 0, 0]
-        });
-    }
-
-    pdfMake.createPdf({
-    pageSize: 'A4',
-    pageMargins: [20, 20, 20, 20],
-    pageOrientation: 'portrait',
-
-    content: content,
-
-    styles: {
-        header: {
-            fontSize: 18,
-            bold: true
-        },
-
-        tableHeader: {
-            bold: true,
-            fillColor: '#2c3e50',
-            color: 'white'
-        },
-
-        total: {
-            fontSize: 14,
-            bold: true
+        
+        function newOffer() {
+            
+            
+            if (!confirm("Сигурен ли си, че искаш нова оферта?")) return;
+            
+            items = [];
+            render();
+            
+            document.getElementById("clientName").value = "";
+            document.getElementById("clientAddress").value = "";
+            document.getElementById("note").value = "";
+            
+            qty = 1;
+            
+            let qtyEl = document.getElementById("qty");
+            
+            
+            if (qtyEl) {
+                if (qtyEl.tagName !== "INPUT" && qtyEl.tagName !== "SELECT") {
+                    qtyEl.innerText = qty;
+                } else {
+                    qtyEl.value = qty;
+                }
+            }
+            
+            document.getElementById("total").innerText = "0";
+            document.getElementById("qty").value = 1;
+            
+            editingOfferId = null;
+            
+            document.getElementById("editMode").innerHTML = "";
         }
-    }
-}).download(offerNumber + ".pdf");
-
-}
-
-function newOffer() {
-  
-
-    if (!confirm("Сигурен ли си, че искаш нова оферта?")) return;
-
-    items = [];
-    render();
-
-    document.getElementById("clientName").value = "";
-    document.getElementById("clientAddress").value = "";
-    document.getElementById("note").value = "";
-
-    qty = 1;
-
-    let qtyEl = document.getElementById("qty");
-     
-
-    if (qtyEl) {
-        if (qtyEl.tagName !== "INPUT" && qtyEl.tagName !== "SELECT") {
-            qtyEl.innerText = qty;
-        } else {
-            qtyEl.value = qty;
+        
+        function saveData() {
+            
+            const data = {
+                items,
+                clientName: document.getElementById("clientName").value,
+                clientAddress: document.getElementById("clientAddress").value,
+                note: document.getElementById("note").value
+            };
+            
+            localStorage.setItem("crm_offer", JSON.stringify(data));
         }
-    }
-
-    document.getElementById("total").innerText = "0";
-     document.getElementById("qty").value = 1;
-
-    editingOfferId = null;
-
-document.getElementById("editMode").innerHTML = "";
-}
-
-function saveData() {
-
-    const data = {
-        items,
-        clientName: document.getElementById("clientName").value,
-        clientAddress: document.getElementById("clientAddress").value,
-        note: document.getElementById("note").value
-    };
-
-    localStorage.setItem("crm_offer", JSON.stringify(data));
-}
-
-function saveOffer() {
-
-    if (items.length === 0) {
-        alert("Няма артикули");
-        return;
-    }
-
-    let history =
-        JSON.parse(localStorage.getItem("crm_history")) || [];
-
-    const offer = {
-
-        id: editingOfferId || Date.now(),
-
-        date: new Date().toLocaleString("bg-BG"),
-
-        clientName:
-            document.getElementById("clientName").value || "-",
-
-        clientAddress:
-            document.getElementById("clientAddress").value || "-",
-
-        note:
-            document.getElementById("note").value || "",
-
-        items: [...items]
-    };
-
-    // 🔥 EDIT MODE
-    if (editingOfferId) {
-
-        history = history.map(o =>
-            o.id === editingOfferId ? offer : o
-        );
-
-        alert("Офертата е обновена");
-
-    }
-
-    // 🔥 NEW OFFER
-    else {
-
-        history.unshift(offer);
-
-        alert("Офертата е запазена");
-    }
-
-    localStorage.setItem(
-        "crm_history",
-        JSON.stringify(history)
-    );
-
-    editingOfferId = null;
-
-    renderHistory();
-      items = [];
-    document.getElementById("clientName").value = "";
-    document.getElementById("clientAddress").value = "";
-    document.getElementById("note").value = "";
-    document.getElementById("total").innerText = "0";
-    document.getElementById("list").innerHTML = "";
-    document.getElementById("editMode").innerHTML = "";
-    
-    // ако искаш можеш да върнеш и quantity на 1
-    document.getElementById("qty").value = 1;
-   
-}
-
-
-function renderHistory() {
-
-    let history =
-        JSON.parse(localStorage.getItem("crm_history")) || [];
-
-    let box = document.getElementById("history");
-
-    box.innerHTML = "";
-
-    history.forEach(o => {
-
-        box.innerHTML += `
+        
+        function saveOffer() {
+            
+            if (items.length === 0) {
+                alert("Няма артикули");
+                return;
+            }
+            
+            let history =
+            JSON.parse(localStorage.getItem("crm_history")) || [];
+            
+            const offer = {
+                
+                id: editingOfferId || Date.now(),
+                
+                date: new Date().toLocaleString("bg-BG"),
+                
+                clientName:
+                document.getElementById("clientName").value || "-",
+                
+                clientAddress:
+                document.getElementById("clientAddress").value || "-",
+                
+                note:
+                document.getElementById("note").value || "",
+                
+                items: [...items]
+            };
+            
+            // 🔥 EDIT MODE
+            if (editingOfferId) {
+                
+                history = history.map(o =>
+                o.id === editingOfferId ? offer : o
+                );
+                
+                alert("Офертата е обновена");
+                
+            }
+            
+            // 🔥 NEW OFFER
+            else {
+                
+                history.unshift(offer);
+                
+                alert("Офертата е запазена");
+            }
+            
+            localStorage.setItem(
+            "crm_history",
+            JSON.stringify(history)
+            );
+            
+            editingOfferId = null;
+            
+            renderHistory();
+            items = [];
+            document.getElementById("clientName").value = "";
+            document.getElementById("clientAddress").value = "";
+            document.getElementById("note").value = "";
+            document.getElementById("total").innerText = "0";
+            document.getElementById("list").innerHTML = "";
+            document.getElementById("editMode").innerHTML = "";
+            
+            // ако искаш можеш да върнеш и quantity на 1
+            document.getElementById("qty").value = 1;
+            
+        }
+        
+        
+        function renderHistory() {
+            
+            let history =
+            JSON.parse(localStorage.getItem("crm_history")) || [];
+            
+            let box = document.getElementById("history");
+            
+            box.innerHTML = "";
+            
+            history.forEach(o => {
+                
+                box.innerHTML += `
 
         <div class="card">
 
@@ -786,59 +784,59 @@ function renderHistory() {
 
         </div>
         `;
-    });
-}
-
-function deleteOffer(id) {
-
-    if (!confirm("Изтриване?")) return;
-
-    let history =
-        JSON.parse(localStorage.getItem("crm_history")) || [];
-
-    history =
-        history.filter(o => o.id !== id);
-
-    localStorage.setItem(
-        "crm_history",
-        JSON.stringify(history)
-    );
-
-    renderHistory();
-}
-function loadOffer(id) {
-
-    let history =
-        JSON.parse(localStorage.getItem("crm_history")) || [];
-
-    let offer =
-        history.find(o => o.id === id);
-
-    if (!offer) return;
-
-    editingOfferId = id;
-
-    items = offer.items;
-
-    document.getElementById("clientName").value =
-        offer.clientName;
-
-    document.getElementById("clientAddress").value =
-        offer.clientAddress;
-
-    document.getElementById("note").value =
-        offer.note;
-
-    render();
-
-    saveData();
-
-    // scroll top
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-    document.getElementById("editMode").innerHTML = `
+            });
+        }
+        
+        function deleteOffer(id) {
+            
+            if (!confirm("Изтриване?")) return;
+            
+            let history =
+            JSON.parse(localStorage.getItem("crm_history")) || [];
+            
+            history =
+            history.filter(o => o.id !== id);
+            
+            localStorage.setItem(
+            "crm_history",
+            JSON.stringify(history)
+            );
+            
+            renderHistory();
+        }
+        function loadOffer(id) {
+            
+            let history =
+            JSON.parse(localStorage.getItem("crm_history")) || [];
+            
+            let offer =
+            history.find(o => o.id === id);
+            
+            if (!offer) return;
+            
+            editingOfferId = id;
+            
+            items = offer.items;
+            
+            document.getElementById("clientName").value =
+            offer.clientName;
+            
+            document.getElementById("clientAddress").value =
+            offer.clientAddress;
+            
+            document.getElementById("note").value =
+            offer.note;
+            
+            render();
+            
+            saveData();
+            
+            // scroll top
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+            document.getElementById("editMode").innerHTML = `
 <style>
   #editMode .edit-banner {
     display: flex;
@@ -882,112 +880,112 @@ function loadOffer(id) {
   <button class="cancel-btn" onclick="cancelEdit()">❌ Откажи</button>
 </div>
 `;
-
-if (!offer) {
-    document.getElementById("editMode").innerHTML = "";
-    return;
-}
-
-}
-
-function cancelEdit() {
-      editingOfferId = null;
-    items = [];
-    
-
-    document.getElementById("clientName").value = "";
-    document.getElementById("clientAddress").value = "";
-    document.getElementById("note").value = "";
-    document.getElementById("qty").value = 1; // ако искаш да върнеш по подразбиране
-    
-    document.getElementById("total").innerText = "0";
-    document.getElementById("list").innerHTML = "";
-    document.getElementById("editMode").innerHTML = "";
-
-
-}
-
-    function getColor(cat) {
-        switch(cat.toLowerCase()) {
-            case "баня": return [52,152,219];
-            case "ел": return [241,196,15];
-            case "вик": return [46,204,113];
-            default: return [149,165,166];
-        }
-    
-
-    Object.keys(grouped).forEach(cat => {
-
-        let color = getColor(cat);
-
-        doc.setFillColor(...color);
-        doc.rect(10, y - 5, pageWidth - 20, 10, "F");
-
-        doc.setTextColor(255,255,255);
-        doc.setFontSize(12);
-        doc.text(cat, 12, y);
-
-        y += 10;
-
-        doc.setTextColor(0,0,0);
-
-        grouped[cat].forEach(i => {
-
-            let lineTotal = i.qty * i.price;
-            total += lineTotal;
-
-            doc.text(`• ${i.sub}`, 12, y);
-            doc.text(String(i.qty), 90, y);
-            doc.text(i.price.toFixed(2), 130, y);
-            doc.text(lineTotal.toFixed(2), 165, y);
-
-            y += 6;
-
-            if (y > 260) {
-                doc.addPage();
-                y = 20;
+            
+            if (!offer) {
+                document.getElementById("editMode").innerHTML = "";
+                return;
             }
-        });
-
-        doc.setFont(undefined, "bold");
-        doc.text(`Общо за ${cat}: ${categoryTotals[cat].toFixed(2)} евро`, 12, y);
-        doc.setFont(undefined, "normal");
-
-        y += 10;
-        doc.line(10, y, pageWidth - 10, y);
-        y += 8;
-    });
-
-    // 💰 TOTAL
-    doc.setFontSize(14);
-    doc.text("ОБЩА СУМА:", 130, y);
-    doc.text(total.toFixed(2) + " евро", 165, y);
-
-    y += 12;
-
-    // 📝 NOTE
-    if (note.trim() !== "") {
-        doc.setFontSize(11);
-        doc.text("Забележка:", 10, y);
-        y += 6;
-
-        let split = doc.splitTextToSize(note, pageWidth - 20);
-        doc.text(split, 10, y);
-
-        y += split.length * 6;
-    }
-
-    doc.save(offerNumber + ".pdf");
-
-
-loadCategories();
-    }
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-    .then(() => console.log("PWA ready"))
-    .catch(err => console.log(err));
-}
-</script>
-
+            
+        }
+        
+        function cancelEdit() {
+            editingOfferId = null;
+            items = [];
+            
+            
+            document.getElementById("clientName").value = "";
+            document.getElementById("clientAddress").value = "";
+            document.getElementById("note").value = "";
+            document.getElementById("qty").value = 1; // ако искаш да върнеш по подразбиране
+            
+            document.getElementById("total").innerText = "0";
+            document.getElementById("list").innerHTML = "";
+            document.getElementById("editMode").innerHTML = "";
+            
+            
+        }
+        
+        function getColor(cat) {
+            switch(cat.toLowerCase()) {
+                case "баня": return [52,152,219];
+                case "ел": return [241,196,15];
+                case "вик": return [46,204,113];
+                default: return [149,165,166];
+            }
+            
+            
+            Object.keys(grouped).forEach(cat => {
+                
+                let color = getColor(cat);
+                
+                doc.setFillColor(...color);
+                doc.rect(10, y - 5, pageWidth - 20, 10, "F");
+                
+                doc.setTextColor(255,255,255);
+                doc.setFontSize(12);
+                doc.text(cat, 12, y);
+                
+                y += 10;
+                
+                doc.setTextColor(0,0,0);
+                
+                grouped[cat].forEach(i => {
+                    
+                    let lineTotal = i.qty * i.price;
+                    total += lineTotal;
+                    
+                    doc.text(`• ${i.sub}`, 12, y);
+                    doc.text(String(i.qty), 90, y);
+                    doc.text(i.price.toFixed(2), 130, y);
+                    doc.text(lineTotal.toFixed(2), 165, y);
+                    
+                    y += 6;
+                    
+                    if (y > 260) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                });
+                
+                doc.setFont(undefined, "bold");
+                doc.text(`Общо за ${cat}: ${categoryTotals[cat].toFixed(2)} евро`, 12, y);
+                doc.setFont(undefined, "normal");
+                
+                y += 10;
+                doc.line(10, y, pageWidth - 10, y);
+                y += 8;
+            });
+            
+            // 💰 TOTAL
+            doc.setFontSize(14);
+            doc.text("ОБЩА СУМА:", 130, y);
+            doc.text(total.toFixed(2) + " евро", 165, y);
+            
+            y += 12;
+            
+            // 📝 NOTE
+            if (note.trim() !== "") {
+                doc.setFontSize(11);
+                doc.text("Забележка:", 10, y);
+                y += 6;
+                
+                let split = doc.splitTextToSize(note, pageWidth - 20);
+                doc.text(split, 10, y);
+                
+                y += split.length * 6;
+            }
+            
+            doc.save(offerNumber + ".pdf");
+            
+            
+            loadCategories();
+        }
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+            .then(() => console.log("PWA ready"))
+            .catch(err => console.log(err));
+        }
+    </script>
+    
 </body>
 </html>
