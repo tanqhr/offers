@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+
+
+    <!DOCTYPE html>
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
@@ -99,7 +101,36 @@ button {
   z-index: 1000;
 }
 
+.form-card {
+    display: flex;
+    flex-direction: column;
+}
 
+input.manual-input,
+input[type="number"],
+input[type="text"],
+textarea{
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 6px;
+    height: 36px; /* фиксирана височина за input */
+    max-height: 40px;
+    box-sizing: border-box;
+}
+
+
+/* За textarea (ръчно въвеждане на услуга/цена) */
+textarea.manual-input {
+    height: auto; /* ще се разширява с текст, но не прекалено */
+    min-height: 36px;
+    max-height: 80px;
+}
+ 
+.manual-add {
+    padding: 0;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+}
 html,
 body {
     overflow-x: hidden;
@@ -196,13 +227,45 @@ body {
 <div id="editMode">
 </div>
 
-<div class="card">
+<div class="card form-card">
+ 
+    <div class="row">
+
+        <select id="category" onchange="loadSub()"></select>
+
+        <select id="sub"></select>
+
+        <input type="number"
+               id="qty"
+               placeholder="Количество">
+
+        <button onclick="add()">Добави</button>
+
+    </div>
+
 
 <div class="row">
-<select id="category" onchange="loadSub()"></select>
-<select id="sub"></select>
-<input type="number" id="qty" placeholder="Количество">
-<button onclick="add()">Добави</button>
+
+    <input type="text"
+           id="customCategory"
+           placeholder="Категория">
+
+    <input type="text"
+           id="customService"
+           placeholder="Услуга">
+
+    <input type="number"
+           id="customQty"
+           placeholder="Кол.">
+
+    <input type="number"
+           id="customPrice"
+           placeholder="Цена">
+
+    <button class="manual-add" onclick="addCustom()">
+        ➕ Ръчно
+    </button>
+
 </div>
 
 </div>
@@ -210,7 +273,7 @@ body {
 <div id="list"></div>
 
 <div class="total">
-Общо: <span id="total">0</span> лв
+Общо: <span id="total">0</span> евро
 </div>
 
 <!-- 👤 CLIENT -->
@@ -235,17 +298,12 @@ body {
 <div id="history"></div>
 
 <script>
-    let prices = {};
+let prices = {};
 let items = [];
 let editingOfferId = null;
 let qty = 1;
 
-// fetch('./prices.json')
-// .then(r => r.json())
-// .then(data => {
-//     prices = data;
-//     loadCategories();
-// });
+
 function loadSavedData() {
 
     const saved =
@@ -308,7 +366,7 @@ function loadSub() {
     Object.keys(prices[cat]).forEach(s => {
         let opt = document.createElement("option");
         opt.value = s;
-        opt.innerText = s + " (" + prices[cat][s] + " лв)";
+        opt.innerText = s + " (" + prices[cat][s] + " евро)";
         sub.appendChild(opt);
     });
 }
@@ -325,6 +383,53 @@ function add() {
     render();
 }
 
+function addCustom() {
+
+    let category =
+        document.getElementById("customCategory").value;
+
+    let service =
+        document.getElementById("customService").value;
+
+    let qty =
+        parseFloat(
+            document.getElementById("customQty").value || 1
+        );
+
+    let price =
+        parseFloat(
+            document.getElementById("customPrice").value || 0
+        );
+
+    if (!category || !service || qty <= 0 || price <= 0) {
+
+        alert("Попълни всички полета");
+
+        return;
+    }
+
+    items.push({
+
+        cat: category,
+
+        sub: service,
+
+        qty: qty,
+
+        price: price
+    });
+
+    render();
+
+    // clear fields
+    document.getElementById("customCategory").value = "";
+
+    document.getElementById("customService").value = "";
+
+    document.getElementById("customQty").value = "";
+
+    document.getElementById("customPrice").value = "";
+}
 
 function removeItem(index) {
     items.splice(index, 1);
@@ -346,7 +451,7 @@ function render() {
 <div class="card">
 
     <div class="card-content">
-        ${i.cat} → ${i.sub} | ${i.qty} × ${i.price} = ${i.qty * i.price} лв
+        ${i.cat} → ${i.sub} | ${i.qty} × ${i.price} = ${i.qty * i.price} евро
     </div>
 
     <button class="delete-btn" onclick="removeItem(${index})">
@@ -460,13 +565,13 @@ function generatePDF() {
             ]);
         });
 
-        tableBody.push([
-            { text: `Общо за ${cat}`, colSpan: 4, bold: true, alignment: 'right' },
-            {},
-            {},
-            {},
-            { text: categoryTotals[cat].toFixed(2), bold: true }
-        ]);
+        // tableBody.push([
+        //     { text: `Общо за ${cat}`, colSpan: 4, bold: true, alignment: 'right' },
+        //     {},
+        //     {},
+        //     {},
+        //     { text: categoryTotals[cat].toFixed(2), bold: true }
+        // ]);
 
     });
 
@@ -485,7 +590,7 @@ function generatePDF() {
 
     // 💰 TOTAL
     content.push({
-        text: `\nОБЩА СУМА: ${total.toFixed(2)} лв`,
+        text: `\nОБЩА СУМА: ${total.toFixed(2)} евро`,
         style: 'total',
         alignment: 'right',
         margin: [0, 10, 0, 10]
@@ -572,45 +677,6 @@ function saveData() {
     localStorage.setItem("crm_offer", JSON.stringify(data));
 }
 
-// function saveOffer() {
-
-//     if (items.length === 0) {
-//         alert("Няма артикули");
-//         return;
-//     }
-
-//     let history =
-//         JSON.parse(localStorage.getItem("crm_history")) || [];
-
-//     const offer = {
-
-//         id: Date.now(),
-
-//         date: new Date().toLocaleString("bg-BG"),
-
-//         clientName:
-//             document.getElementById("clientName").value || "-",
-
-//         clientAddress:
-//             document.getElementById("clientAddress").value || "-",
-
-//         note:
-//             document.getElementById("note").value || "",
-
-//         items: [...items]
-//     };
-
-//     history.unshift(offer);
-
-//     localStorage.setItem(
-//         "crm_history",
-//         JSON.stringify(history)
-//     );
-
-//     renderHistory();
-
-//     alert("Офертата е запазена");
-// }
 function saveOffer() {
 
     if (items.length === 0) {
@@ -723,31 +789,6 @@ function renderHistory() {
     });
 }
 
-// function loadOffer(id) {
-
-//     let history =
-//         JSON.parse(localStorage.getItem("crm_history")) || [];
-
-//     let offer =
-//         history.find(o => o.id === id);
-
-//     if (!offer) return;
-
-//     items = offer.items;
-
-//     document.getElementById("clientName").value =
-//         offer.clientName;
-
-//     document.getElementById("clientAddress").value =
-//         offer.clientAddress;
-
-//     document.getElementById("note").value =
-//         offer.note;
-
-//     render();
-
-//     saveData();
-// }
 function deleteOffer(id) {
 
     if (!confirm("Изтриване?")) return;
@@ -841,71 +882,7 @@ function loadOffer(id) {
   <button class="cancel-btn" onclick="cancelEdit()">❌ Откажи</button>
 </div>
 `;
-// document.getElementById("editMode").innerHTML = `
-// <div style="
-//     display: flex;
-//     justify-content: space-between;
-//     align-items: center;
-//     flex-wrap: wrap;
-//     background:#f39c12;
-//     color:white;
-//     padding:10px;
-//     border-radius:8px;
-//     margin-bottom:10px;
-//     font-weight:bold;
-// ">
-// <span style="
-//     flex: 1;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-// ">✏️ Редактираш оферта</span>
-// <button onclick="cancelEdit()" style="
-//     background:#e74c3c;
-//     color:white;
-//     border:none;
-//     border-radius:5px;
-//     padding:5px 8px;
-//     cursor:pointer;
-//     margin-top:5px;
-//     flex-basis: 100%; /* заема цял ред, когато се пренася */
-//     text-align: center; /* центрира текста в бутона */
-//     display: block; /* позволява центриране */
-// ">❌ Откажи</button>
-// </div>
-// `;
-// // 
-// document.getElementById("editMode").innerHTML = `
-// <div style="
-//     display: flex;
-//     justify-content: space-between;
-//     align-items: center; /* вертикално центриране */
-//     flex-wrap: wrap; /* позволява на бутон да се премести под текста на тесни екрани */
-//     background:#f39c12;
-//     color:white;
-//     padding:10px;
-//     border-radius:8px;
-//     margin-bottom:10px;
-//     font-weight:bold;
-//     text-align: center; /* хоризонтално центриране на текста */
-// ">
-// <span style="
-//     flex: 1; /* заема цялото налично пространство */
-//     display: flex;
-//     justify-content: center; /* хоризонтално центриране */
-//     align-items: center; /* вертикално центриране */
-// ">✏️ Редактираш оферта</span>
-// <button onclick="cancelEdit()" style="
-//     background:#e74c3c;
-//     color:white;
-//     border:none;
-//     border-radius:5px;
-//     padding:5px 8px;
-//     cursor:pointer;
-//     margin-top:5px; /* когато се премести на нов ред */
-// ">❌ Откажи</button>
-// </div>
-// `;
+
 if (!offer) {
     document.getElementById("editMode").innerHTML = "";
     return;
@@ -927,15 +904,7 @@ function cancelEdit() {
     document.getElementById("list").innerHTML = "";
     document.getElementById("editMode").innerHTML = "";
 
-    // editingOfferId = null;
 
-    // document.getElementById("editMode").innerHTML = "";
-
-    // items = [];
-
-    // render();
-
-    // saveData();
 }
 
     function getColor(cat) {
@@ -981,7 +950,7 @@ function cancelEdit() {
         });
 
         doc.setFont(undefined, "bold");
-        doc.text(`Общо за ${cat}: ${categoryTotals[cat].toFixed(2)} лв`, 12, y);
+        doc.text(`Общо за ${cat}: ${categoryTotals[cat].toFixed(2)} евро`, 12, y);
         doc.setFont(undefined, "normal");
 
         y += 10;
@@ -992,7 +961,7 @@ function cancelEdit() {
     // 💰 TOTAL
     doc.setFontSize(14);
     doc.text("ОБЩА СУМА:", 130, y);
-    doc.text(total.toFixed(2) + " лв", 165, y);
+    doc.text(total.toFixed(2) + " евро", 165, y);
 
     y += 12;
 
@@ -1022,8 +991,3 @@ loadCategories();
 
 </body>
 </html>
- 
-
-
-   
-   
