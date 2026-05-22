@@ -19,88 +19,88 @@
 //     .then(response => response || fetch(event.request))
 //   );
 // });
-const CACHE_NAME = "crm-cache-v2";
+// const CACHE_NAME = "crm-cache-v2";
 
-const urlsToCache = [
-    "./",
-    "./index.html",
-    "./prices.json",
-    "./manifest.json"
-];
-
-
-// INSTALL
-self.addEventListener("install", event => {
-
-    event.waitUntil(
-
-        caches.open(CACHE_NAME)
-        .then(cache => cache.addAll(urlsToCache))
-
-    );
-
-});
+// const urlsToCache = [
+//     "./",
+//     "./index.html",
+//     "./prices.json",
+//     "./manifest.json"
+// ];
 
 
-// ACTIVATE
-self.addEventListener("activate", event => {
+// // INSTALL
+// self.addEventListener("install", event => {
 
-    event.waitUntil(
+//     event.waitUntil(
 
-        caches.keys().then(cacheNames => {
+//         caches.open(CACHE_NAME)
+//         .then(cache => cache.addAll(urlsToCache))
 
-            return Promise.all(
+//     );
 
-                cacheNames.map(cache => {
-
-                    if (cache !== CACHE_NAME) {
-
-                        return caches.delete(cache);
-
-                    }
-
-                })
-
-            );
-
-        })
-
-    );
-
-});
+// });
 
 
-// FETCH
-self.addEventListener("fetch", event => {
+// // ACTIVATE
+// self.addEventListener("activate", event => {
 
-    event.respondWith(
+//     event.waitUntil(
 
-        caches.match(event.request)
-        .then(response => {
+//         caches.keys().then(cacheNames => {
 
-            return response || fetch(event.request);
+//             return Promise.all(
 
-        })
+//                 cacheNames.map(cache => {
 
-    );
+//                     if (cache !== CACHE_NAME) {
 
-});
+//                         return caches.delete(cache);
 
+//                     }
 
-// self.addEventListener("install", e => {
-//     e.waitUntil(
-//         caches.open("crm-cache").then(cache => {
-//             return cache.addAll([
-//                 "./",
-//                 "./index.html",
-//                 "./prices.json"
-//             ]);
+//                 })
+
+//             );
+
 //         })
+
 //     );
+
 // });
 
-// self.addEventListener("fetch", e => {
-//     e.respondWith(
-//         caches.match(e.request).then(r => r || fetch(e.request))
+
+// // FETCH
+// self.addEventListener("fetch", event => {
+
+//     event.respondWith(
+
+//         caches.match(event.request)
+//         .then(response => {
+
+//             return response || fetch(event.request);
+
+//         })
+
 //     );
+
 // });
+
+
+self.addEventListener("install", e => {
+    e.waitUntil(
+        caches.open("crm-cache").then(cache => {
+            return cache.addAll([
+                "./",
+                "./index.html",
+                "./prices.json"
+            ]);
+        })
+    );
+});
+
+self.addEventListener("fetch", e => {
+    e.respondWith(
+        caches.match(e.request).then(r => r || fetch(e.request))
+    );
+});
