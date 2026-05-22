@@ -966,16 +966,31 @@ function createDocDefinition() {
     };
 }
 function downloadOfferPDF(id) {
+
     let history = JSON.parse(localStorage.getItem("crm_history")) || [];
     let offer = history.find(o => o.id === id);
-    if (!offer || !offer.pdfBase64) {
-        alert("PDF не е наличен!");
+
+    if (!offer) {
+        alert("Офертата не е намерена!");
         return;
     }
-    let link = document.createElement("a");
-    link.href = "data:application/pdf;base64," + offer.pdfBase64;
-    link.download = "оферта_" + offer.id + ".pdf";
-    link.click();
+
+    // зареждаме данните в временно състояние
+    let tempItems = offer.items;
+    let clientName = offer.clientName;
+    let clientAddress = offer.clientAddress;
+    let note = offer.note;
+
+    // генерираме PDF директно
+    const docDefinition = createDocDefinitionFromOffer(
+        offer,
+        tempItems,
+        clientName,
+        clientAddress,
+        note
+    );
+
+    pdfMake.createPdf(docDefinition).download(`оферта_${offer.id}.pdf`);
 }
         
        
