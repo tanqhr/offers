@@ -676,54 +676,27 @@ function saveOffer() {
     }
 
     let history = JSON.parse(localStorage.getItem("crm_history")) || [];
-
-    // ТЪРСИ СТАРА ОФЕРТА
     let existingOffer = history.find(o => o.id === editingOfferId);
-
-    // АКО ИМА СТАР НОМЕР -> ПАЗИ ГО
     let offerNumber = existingOffer?.offerNumber || ("OF-" + Date.now());
-
-    // АКО ИМА СТАРА ДАТА -> ПАЗИ Я
     let dateStr = existingOffer?.dateStr || new Date().toLocaleDateString("bg-BG");
 
     const offer = {
-
         id: editingOfferId || Date.now(),
-
         offerNumber: offerNumber,
-
         dateStr: dateStr,
-
         date: new Date().toLocaleString("bg-BG"),
-
         clientName: document.getElementById("clientName").value || "-",
-
         clientAddress: document.getElementById("clientAddress").value || "-",
-
         note: document.getElementById("note").value || "",
-
         items: [...items],
-
         pdfBase64: ""
     };
 
-    // EDIT
     if (editingOfferId) {
-
-        history = history.map(o =>
-            o.id === editingOfferId ? offer : o
-        );
-
-        alert("Офертата е обновена");
-
+        history = history.map(o => o.id === editingOfferId ? offer : o);
     } else {
-
         history.unshift(offer);
-
-        alert("Офертата е запазена");
     }
-
-    localStorage.setItem("crm_history", JSON.stringify(history));
 
     let docDefinition = createDocDefinition(
         offer.offerNumber,
@@ -731,36 +704,27 @@ function saveOffer() {
     );
 
     pdfMake.createPdf(docDefinition).getBuffer(function(buffer) {
-
         let base64 = arrayBufferToBase64(buffer);
-
         offer.pdfBase64 = base64;
-
-        history = history.map(o =>
-            o.id === offer.id ? offer : o
-        );
-
+        history = history.map(o => o.id === offer.id ? offer : o);
         localStorage.setItem("crm_history", JSON.stringify(history));
+        renderHistory();
+
+        if (editingOfferId) {
+            alert("Офертата е обновена");
+        } else {
+            alert("Офертата е запазена");
+        }
     });
 
     editingOfferId = null;
-
-    renderHistory();
-
     items = [];
-
     document.getElementById("clientName").value = "";
-
     document.getElementById("clientAddress").value = "";
-
     document.getElementById("note").value = "";
-
     document.getElementById("total").innerText = "0";
-
     document.getElementById("list").innerHTML = "";
-
     document.getElementById("editMode").innerHTML = "";
-
     document.getElementById("qty").value = 1;
 }
 
@@ -790,7 +754,7 @@ function renderHistory() {
     });
 }
 
-// ⚡ Функция за сваляне на PDF от Base64
+
 function downloadPDF(base64, filename) {
     const link = document.createElement('a');
     link.href = "data:application/pdf;base64," + base64;
@@ -799,16 +763,44 @@ function downloadPDF(base64, filename) {
 }
 
 
-function downloadPDF(id){
-    let history = JSON.parse(localStorage.getItem("crm_history")) || [];
-    let offer = history.find(o => o.id === id);
-    if(!offer || !offer.pdfBase64) return alert("PDF не е наличен");
+// function downloadPDF(id){
+//     let history = JSON.parse(localStorage.getItem("crm_history")) || [];
+//     let offer = history.find(o => o.id === id);
+//     if(!offer || !offer.pdfBase64) return alert("PDF не е наличен");
 
-    const link = document.createElement('a');
-    link.href = "data:application/pdf;base64," + offer.pdfBase64;
-    link.download = `оферта_${offer.offerNumber}.pdf`;
-    link.click();
-}
+//     const link = document.createElement('a');
+//     link.href = "data:application/pdf;base64," + offer.pdfBase64;
+//     link.download = `оферта_${offer.offerNumber}.pdf`;
+//     link.click();
+// }
+
+// function downloadOfferPDF(id) {
+
+//     let history = JSON.parse(localStorage.getItem("crm_history")) || [];
+//     let offer = history.find(o => o.id === id);
+
+//     if (!offer) {
+//         alert("Офертата не е намерена!");
+//         return;
+//     }
+
+//     // зареждаме данните в временно състояние
+//     let tempItems = offer.items;
+//     let clientName = offer.clientName;
+//     let clientAddress = offer.clientAddress;
+//     let note = offer.note;
+
+//     // генерираме PDF директно
+//     const docDefinition = createDocDefinitionFromOffer(
+//         offer,
+//         tempItems,
+//         clientName,
+//         clientAddress,
+//         note
+//     );
+
+//     pdfMake.createPdf(docDefinition).download(`оферта_${offer.id}.pdf`);
+// }
 
 
 function createDocDefinition() {
