@@ -964,10 +964,38 @@ function downloadOfferPDF(id) {
         alert("PDF не е наличен!");
         return;
     }
-    let link = document.createElement("a");
-    link.href = "data:application/pdf;base64," + offer.pdfBase64;
-    link.download = "оферта_" + offer.id + ".pdf";
-    link.click();
+    try {
+        const byteChars = atob(offer.pdfBase64);
+        const byteNumbers = new Array(byteChars.length);
+        for (let i = 0; i < byteChars.length; i++) {
+            byteNumbers[i] = byteChars.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        // Try to open in new tab/window (works better on many mobile browsers)
+        const opened = window.open(url, '_blank');
+
+        if (!opened) {
+            // fallback to programmatic download
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'оферта_' + (offer.offerNumber || offer.id) + '.pdf';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        }
+
+        // revoke object URL later
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (e) {
+        // last-resort fallback to data URL
+        const link = document.createElement("a");
+        link.href = "data:application/pdf;base64," + offer.pdfBase64;
+        link.download = "оферта_" + (offer.offerNumber || offer.id) + ".pdf";
+        link.click();
+    }
 }
         
        
