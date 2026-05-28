@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="./icon-192.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     
@@ -46,6 +47,116 @@
             box-sizing: border-box;
             font-size: 16px;
         }
+
+  .switch-wrap{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    background:#fffdf2;
+
+    padding:8px 14px;
+
+    border-radius:12px;
+
+    border:1px solid #f3e6a0;
+
+    min-height:44px;
+}
+
+
+/* SWITCH */
+
+.switch{
+
+    position:relative;
+
+    display:inline-block;
+
+    width:52px;
+
+    height:28px;
+
+}
+
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+
+/* SLIDER */
+
+.slider{
+
+    position:absolute;
+
+    cursor:pointer;
+
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+
+    background-color:#d6d6d6;
+
+    transition:.3s;
+
+    border-radius:34px;
+}
+
+
+.slider:before{
+
+    position:absolute;
+
+    content:"";
+
+    height:22px;
+    width:22px;
+
+    left:3px;
+    bottom:3px;
+
+    background:white;
+
+    transition:.3s;
+
+    border-radius:50%;
+}
+
+
+/* ACTIVE */
+
+.switch input:checked + .slider{
+
+    background-color:#f4d03f;
+}
+
+
+.switch input:checked + .slider:before{
+
+    transform:translateX(24px);
+}
+
+
+/* TEXT */
+
+.switch-label{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#2c3e50;
+
+    white-space:nowrap;
+}
+
+
         
         .card {
             background: white;
@@ -135,6 +246,7 @@
             max-width: 100%;
             background: #f5f5f5;
         }
+
         
         @media (max-width: 400px) {
             
@@ -156,6 +268,8 @@
                 gap: 8px;
                 width: 100%;
             }
+
+            
             
             /* 🔥 INPUT FIX */
             select,
@@ -217,6 +331,52 @@
             
         }
 
+        /* 🖥️ Layout за по-широки екрани */
+@media (min-width: 401px) {
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  /* селектите да са по-стабилни */
+  .row select {
+    flex: 2;
+    min-width: 180px;
+  }
+
+  /* количество */
+  .row input[type="number"]#qty {
+    flex: 1;
+    min-width: 120px;
+    max-width: 160px;
+  }
+
+  /* бутон "Добави" */
+  .row button {
+    flex: 0 0 140px;
+    height: 42px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  /* switch секцията да не раздува реда */
+  .switch-wrap {
+    flex: 2;
+    justify-content: center;
+  }
+
+  .form-card .row:first-child {
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+}
+
 
 
 
@@ -235,9 +395,25 @@
         <div class="row">
             
             <select id="category" onchange="loadSub()"></select>
+
+             <div class="switch-wrap">
+                <span class="switch-label">Само труд</span>
+
+                <label class="switch">
+                    <input
+                        type="checkbox"
+                        id="withMaterials"
+                        onchange="loadSub()">
+                    <span class="slider"></span>
+                </label>
+
+                <span class="switch-label">Материали и труд</span>
+            </div>
             
             <select id="sub"></select>
-            
+
+           
+
             <input type="number"
             id="qty"
             placeholder="Количество">
@@ -252,14 +428,30 @@
             <input type="text"
             id="customCategory"
             placeholder="Категория">
+
+               <input type="text"
+            id="customType"
+            placeholder="Тип">
             
             <input type="text"
             id="customService"
             placeholder="Услуга">
+
+          
+
             
             <input type="number"
             id="customQty"
             placeholder="Количество">
+
+            <input type="text" id="customUnit" placeholder="Ед. мярка (бр., м², л.м.)">
+
+            <!-- <select id="customUnit">
+  <option value="бр.">бр.</option>
+  <option value="м²">м²</option>
+  <option value="л.м.">л.м.</option>
+  <option value="кг">кг</option>
+</select> -->
             
             <input type="number"
             id="customPrice"
@@ -360,31 +552,103 @@
             loadSub();
         }
         
+        // function loadSub() {
+        //     let cat = document.getElementById("category").value;
+        //     let sub = document.getElementById("sub");
+            
+        //     sub.innerHTML = "";
+            
+        //     Object.keys(prices[cat]).forEach(s => {
+        //         let opt = document.createElement("option");
+        //         opt.value = s;
+        //         opt.innerText = s + " (" + prices[cat][s] + " евро)";
+        //         sub.appendChild(opt);
+        //     });
+        // }
+
         function loadSub() {
-            let cat = document.getElementById("category").value;
-            let sub = document.getElementById("sub");
-            
-            sub.innerHTML = "";
-            
-            Object.keys(prices[cat]).forEach(s => {
-                let opt = document.createElement("option");
-                opt.value = s;
-                opt.innerText = s + " (" + prices[cat][s] + " евро)";
-                sub.appendChild(opt);
-            });
-        }
+
+    let cat = document.getElementById("category").value;
+    let sub = document.getElementById("sub");
+
+    let withMaterials =
+    document.getElementById("withMaterials").checked;
+
+    sub.innerHTML = "";
+
+    Object.keys(prices[cat]).forEach(s => {
+
+        let data = prices[cat][s];
+
+        let price =
+        withMaterials
+        ? data.full
+        : data.labor;
+
+        let opt = document.createElement("option");
+
+        opt.value = s;
+
+        opt.innerText =
+        s + " (" + price + " евро)";
+
+        sub.appendChild(opt);
+
+    });
+
+}
         
+        // function add() {
+        //     let cat = document.getElementById("category").value;
+        //     let sub = document.getElementById("sub").value;
+        //     let qty = parseFloat(document.getElementById("qty").value || 0);
+            
+        //     let price = prices[cat][sub];
+            
+        //     items.push({ cat, sub, qty, price });
+            
+        //     render();
+        // }
+
         function add() {
-            let cat = document.getElementById("category").value;
-            let sub = document.getElementById("sub").value;
-            let qty = parseFloat(document.getElementById("qty").value || 0);
-            
-            let price = prices[cat][sub];
-            
-            items.push({ cat, sub, qty, price });
-            
-            render();
-        }
+
+    let cat =
+    document.getElementById("category").value;
+
+    let sub =
+    document.getElementById("sub").value;
+
+    let qty =
+    parseFloat(document.getElementById("qty").value || 1);
+
+    let withMaterials =
+    document.getElementById("withMaterials").checked;
+
+    let service =
+    prices[cat][sub];
+
+let unit = service.unit || "бр.";
+
+    let price =
+    withMaterials
+    ? service.full
+    : service.labor;
+
+    items.push({
+
+        cat,
+        sub,
+        qty,
+        price,
+        unit,
+        type:
+        withMaterials
+        ? "Материали и труд"
+        : "Само труд"
+    });
+
+    render();
+}
         
         function addCustom() {
             
@@ -393,18 +657,22 @@
             
             let service =
             document.getElementById("customService").value;
+
+            let type = document.getElementById("customType").value;
             
             let qty =
             parseFloat(
             document.getElementById("customQty").value || 1
             );
+
+            let unit = document.getElementById("customUnit").value || "бр.";
             
             let price =
             parseFloat(
             document.getElementById("customPrice").value || 0
             );
             
-            if (!category || !service || qty <= 0 || price <= 0) {
+            if (!category || !service || !type || qty <= 0 || price <= 0) {
                 
                 alert("Попълни всички полета");
                 
@@ -416,8 +684,12 @@
                 cat: category,
                 
                 sub: service,
+
+                type: type,
                 
                 qty: qty,
+
+                unit: unit,
                 
                 price: price
             });
@@ -428,8 +700,12 @@
             document.getElementById("customCategory").value = "";
             
             document.getElementById("customService").value = "";
+
+            document.getElementById("customType").value = "";
             
             document.getElementById("customQty").value = "";
+
+            document.getElementById("customUnit").value = "";
             
             document.getElementById("customPrice").value = "";
         }
@@ -555,6 +831,7 @@
         [
             { text: 'Категория', style: 'tableHeader' },
             { text: 'Описание', style: 'tableHeader' },
+             { text: 'Тип', style: 'tableHeader' },
             { text: 'Кол.', style: 'tableHeader' },
             { text: 'Ед. цена', style: 'tableHeader' },
             { text: 'Общо', style: 'tableHeader' }
@@ -563,20 +840,50 @@
 
     Object.keys(grouped).forEach(cat => {
         grouped[cat].forEach((i, index) => {
-            tableBody.push([
-                index === 0 ? { text: cat, rowSpan: grouped[cat].length, bold: true } : {},
-                i.sub,
-                i.qty,
-                i.price.toFixed(2) + " €", // вече в евро
-                (i.qty * i.price).toFixed(2) + " €"
-            ]);
+
+
+            
+    tableBody.push([
+
+    index === 0
+    ? {
+        text: cat,
+        rowSpan: grouped[cat].length,
+        bold: true
+      }
+    : {},
+
+    i.sub,
+
+    {
+        text: i.type,
+        color:
+        i.type === "Материали и труд",
+    
+    },
+
+     `${i.qty} ${i.unit}`,
+
+    i.price.toFixed(2) + " €",
+
+    (i.qty * i.price).toFixed(2) + " €"
+
+]);
+            // tableBody.push([
+            //     index === 0 ? { text: cat, rowSpan: grouped[cat].length, bold: true } : {},
+            //     i.sub,
+            //     i.qty,
+            //     i.price.toFixed(2) + " €", // вече в евро
+            //     (i.qty * i.price).toFixed(2) + " €"
+            // ]);
         });
     });
+
 
     content.push({
         table: {
             headerRows: 1,
-            widths: ['*', '*', 40, 60, 70],
+            widths: ['*', '*', 90, 40, 60, 70],
             body: tableBody
         },
         layout: {
@@ -731,30 +1038,6 @@ function saveOffer() {
 
 
 
-// ⚡ В renderHistory() добавяме бутон за сваляне на PDF
-function renderHistory() {
-    let history = JSON.parse(localStorage.getItem("crm_history")) || [];
-    let box = document.getElementById("history");
-    box.innerHTML = "";
-
-    history.forEach(o => {
-        box.innerHTML += `
-        <div class="card">
-            <div class="card-content">
-                <b>${o.clientName}</b><br>
-                ${o.date}<br>
-                ${o.items.length} артикула
-            </div>
-            <div style="display:flex;gap:5px;">
-                <button onclick="loadOffer(${o.id})">📂</button>
-                <button onclick="deleteOffer(${o.id})" class="delete-btn">🗑</button>
-                <button onclick="downloadPDF('${o.pdfBase64}','${o.offerNumber}')">📄</button>
-            </div>
-        </div>`;
-    });
-}
-
-
 function downloadPDF(base64, filename) {
     const link = document.createElement('a');
     link.href = "data:application/pdf;base64," + base64;
@@ -866,6 +1149,7 @@ function createDocDefinition() {
         [
             { text:'Категория', style:'tableHeader' },
             { text:'Описание', style:'tableHeader' },
+             { text:'Тип', style:'tableHeader' },
             { text:'Кол.', style:'tableHeader' },
             { text:'Ед. цена', style:'tableHeader' },
             { text:'Общо', style:'tableHeader' }
@@ -876,17 +1160,61 @@ function createDocDefinition() {
 
         grouped[cat].forEach((i, idx) => {
 
-            tableBody.push([
-                idx === 0
-                    ? { text: cat, rowSpan: grouped[cat].length, bold:true
-   }
-                    : {},
 
-                i.sub,
-                i.qty,
-                i.price.toFixed(2) + " €",
-                (i.qty * i.price).toFixed(2) + " €"
-            ]);
+            tableBody.push([
+    idx === 0
+   
+    ? { text: cat, rowSpan: grouped[cat].length, bold: true }
+    : {},
+
+    i.sub,
+
+    i.type || "Само труд",
+
+  `${i.qty} ${i.unit}`,
+
+    `${i.price.toFixed(2)} €`,
+
+    `${(i.qty * i.price).toFixed(2)} €`
+]);
+
+//             tableBody.push([
+
+//     idx === 0
+//     ? {
+//         text: cat,
+//         rowSpan: grouped[cat].length,
+//         bold:true
+//       }
+//     : {},
+
+//     i.sub,
+
+//     {
+//         text: i.type || "Само труд",
+//         color:
+//         i.type === "Материали и труд"
+       
+//     },
+
+//     i.qty,
+
+//     i.price.toFixed(2) + " €",
+
+//     (i.qty * i.price).toFixed(2) + " €"
+// ]);
+
+//             tableBody.push([
+//                 idx === 0
+//                     ? { text: cat, rowSpan: grouped[cat].length, bold:true
+//    }
+//                     : {},
+
+//                 i.sub,
+//                 i.qty,
+//                 i.price.toFixed(2) + " €",
+//                 (i.qty * i.price).toFixed(2) + " €"
+//             ]);
 
         });
 
@@ -895,7 +1223,7 @@ function createDocDefinition() {
     content.push({
         table: {
             headerRows: 1,
-            widths:['*','*',40,60,70],
+            widths: ['*', '*', 90, 40, 60, 70],
             body: tableBody
         },
 
