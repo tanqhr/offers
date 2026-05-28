@@ -1,4 +1,4 @@
-const CACHE_NAME = "offers-cache-v1";
+const CACHE_NAME = "offers-cache-v3";
 
 const urlsToCache = [
   "./",
@@ -19,14 +19,14 @@ self.addEventListener("fetch", event => {
     .then(response => response || fetch(event.request))
   );
 });
-const CACHE_NAME = "crm-cache-v2";
+// const CACHE_NAME = "crm-cache-v2";
 
-const urlsToCache = [
-    "./",
-    "./index.html",
-    "./prices.json",
-    "./manifest.json"
-];
+// const urlsToCache = [
+//     "./",
+//     "./index.html",
+//     "./prices.json",
+//     "./manifest.json"
+// ];
 
 
 // // INSTALL
