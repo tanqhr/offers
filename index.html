@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="./icon-192.png">
+     <link rel="stylesheet" href="style.css?v=3">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     
@@ -429,9 +430,18 @@
             id="customCategory"
             placeholder="Категория">
 
-               <input type="text"
+               <!-- <input type="text"
             id="customType"
-            placeholder="Тип">
+            placeholder="Тип"> -->
+            <select id="customType">
+    <option value="" disabled selected>
+       Тип
+    </option>
+
+    <option value="Само труд">Само труд</option>
+    <option value="Материали и труд">Материали и труд</option>
+    
+</select>
             
             <input type="text"
             id="customService"
@@ -444,7 +454,17 @@
             id="customQty"
             placeholder="Количество">
 
-            <input type="text" id="customUnit" placeholder="Ед. мярка (бр., м², л.м.)">
+
+<select id="customUnit">
+    <option value="" disabled selected>
+        Ед. мярка
+    </option>
+
+    <option value="бр.">бр.</option>
+    <option value="м²">м²</option>
+    <option value="л.м.">л.м.</option>
+</select>
+            <!-- <input type="text" id="customUnit" placeholder="Ед. мярка (бр., м², л.м.)"> -->
 
             <!-- <select id="customUnit">
   <option value="бр.">бр.</option>
