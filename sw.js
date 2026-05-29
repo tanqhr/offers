@@ -93,7 +93,8 @@ self.addEventListener("install", e => {
             return cache.addAll([
                 "./",
                 "./index.html",
-                "./prices.json"
+                "./prices.json",
+                '/style.css?v=3'
             ]);
         })
     );
