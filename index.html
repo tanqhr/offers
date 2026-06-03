@@ -1006,7 +1006,201 @@ function downloadPDF(base64, filename) {
 
 
 
-function createDocDefinition(offerNumber,
+// function createDocDefinition(offerNumber,
+//     dateStr) {
+
+//     let clientName = document.getElementById("clientName").value || "-";
+//     let clientAddress = document.getElementById("clientAddress").value || "-";
+//     let note = document.getElementById("note").value || "";
+
+//     // let today = new Date();
+
+//     // let offerNumber = editingOfferId
+//     //     ? "OF-" + editingOfferId
+//     //     : "OF-" + Date.now();
+
+//     // let dateStr = today.toLocaleDateString("bg-BG");
+
+//     // ================= GROUPING =================
+//     let grouped = {};
+
+//     items.forEach(item => {
+
+//         let room = item.room || " ";
+
+//         if (!grouped[room]) grouped[room] = {};
+//         if (!grouped[room][item.cat]) grouped[room][item.cat] = [];
+
+//         grouped[room][item.cat].push(item);
+//     });
+
+//     let content = [];
+
+//     // ================= HEADER =================
+//     content.push({
+//         text: 'ТА ЕНД КО "ЕООД"',
+//         style: 'header',
+//         alignment: 'center',
+//         margin: [0, 0, 0, 5]
+//     });
+
+//     content.push({
+//         text: 'СТРОИТЕЛНИ И РЕМОНТНИ ДЕЙНОСТИ',
+//         alignment: 'center',
+//         margin: [0, 0, 0, 10]
+//     });
+
+//     content.push({
+//         text: `ОФЕРТА №: ${offerNumber}`,
+//         alignment: 'center'
+//     });
+
+//     content.push({
+//         text: `Дата: ${dateStr}`,
+//         alignment: 'center',
+//         margin: [0, 0, 0, 10]
+//     });
+
+//     content.push({
+//         text: `Клиент: ${clientName}\nАдрес: ${clientAddress}`,
+//         margin: [0, 0, 0, 10]
+//     });
+
+//     // ================= TABLE =================
+//     let tableBody = [
+//         [
+//             { text: 'Описание', style: 'tableHeader' },
+//             { text: 'Тип', style: 'tableHeader' },
+//             { text: 'Кол.', style: 'tableHeader' },
+//             { text: 'Ед. цена', style: 'tableHeader' },
+//             { text: 'Общо', style: 'tableHeader' }
+//         ]
+//     ];
+
+//     let total = 0;
+
+//     Object.keys(grouped).forEach(room => {
+
+//         // 🟡 ROOM HEADER
+//         tableBody.push([
+//             {
+//                 text: room.toUpperCase(),
+//                 colSpan: 5,
+//                 fillColor: '#FFFDE7',
+//                 bold: true,
+//                 // alignment: 'center',
+//                 margin: [0, 6, 0, 6]
+//             },
+//             {}, {}, {}, {}
+//         ]);
+
+//         let roomTotal = 0;
+
+//         Object.keys(grouped[room]).forEach(cat => {
+
+//             // ⚪ CATEGORY HEADER
+//             tableBody.push([
+//                 {
+//                     text: '   ' + cat,
+//                     colSpan: 5,
+//                     fillColor: '#F5F5F5',
+//                     bold: true
+//                 },
+//                 {}, {}, {}, {}
+//             ]);
+
+//             grouped[room][cat].forEach(item => {
+
+//                 let qty = Number(item.qty || 0);
+//                 let price = Number(item.price || 0);
+//                 let lineTotal = qty * price;
+
+//                 roomTotal += lineTotal;
+//                 total += lineTotal;
+
+//                 tableBody.push([
+
+//                     // Описание
+//                     '      ' + item.sub,
+
+//                     // Тип
+//                     {
+//                         text: item.type || 'Само Труд',
+//                         fillColor: item.type === 'Труд и материали' ? '#E8F5E9' : null,
+//                         bold: true
+//                     },
+
+//                     // Количество
+//                     `${qty} ${item.unit}`,
+
+//                     // Ед. цена
+//                     `${price.toFixed(2)} €`,
+
+//                     // Общо
+//                     `${lineTotal.toFixed(2)} €`
+//                 ]);
+//             });
+
+//         });
+
+
+//     });
+
+//     content.push({
+//         table: {
+//             headerRows: 1,
+//             widths: ['*', 90, 60, 80, 80],
+//             body: tableBody
+//         },
+//         layout: {
+//             fillColor: function (rowIndex) {
+//                 return rowIndex === 0 ? '#eeeeee' : null;
+//             }
+//         }
+//     });
+
+//     // ================= TOTAL =================
+//     content.push({
+//         text: `\nОБЩА СУМА: ${total.toFixed(2)} €`,
+//         style: 'total',
+//         alignment: 'right',
+//         margin: [0, 10, 0, 10]
+//     });
+
+//     // ================= NOTE =================
+//     if (note.trim() !== "") {
+//         content.push({
+//             text: `Забележка: ${note}`,
+//             margin: [0, 10, 0, 0]
+//         });
+//     }
+
+//     return {
+//         pageSize: 'A4',
+//         pageMargins: [20, 20, 20, 20],
+//         content: content,
+//         styles: {
+//             header: {
+//                 fontSize: 18,
+//                 bold: true
+//             },
+//             tableHeader: {
+//                 bold: true,
+//                 fillColor: '#FFF9C4',
+//                 color: 'black'
+//             },
+//             total: {
+//                 fontSize: 14,
+//                 bold: true
+//             }
+//         }
+//     };
+// }
+
+
+
+
+        function createDocDefinition(offerNumber,
     dateStr) {
 
     let clientName = document.getElementById("clientName").value || "-";
@@ -1066,90 +1260,105 @@ function createDocDefinition(offerNumber,
         margin: [0, 0, 0, 10]
     });
 
-    // ================= TABLE =================
+
+
     let tableBody = [
-        [
-            { text: 'Описание', style: 'tableHeader' },
-            { text: 'Тип', style: 'tableHeader' },
-            { text: 'Кол.', style: 'tableHeader' },
-            { text: 'Ед. цена', style: 'tableHeader' },
-            { text: 'Общо', style: 'tableHeader' }
-        ]
-    ];
+[
+    { text: 'Категория', style: 'tableHeader' },
+    { text: 'Описание', style: 'tableHeader' },
+    { text: 'Тип', style: 'tableHeader' },
+    { text: 'Кол.', style: 'tableHeader' },
+    { text: 'Ед. цена', style: 'tableHeader' },
+    { text: 'Общо', style: 'tableHeader' }
+]
+];
 
     let total = 0;
 
     Object.keys(grouped).forEach(room => {
 
-        // 🟡 ROOM HEADER
+        // // 🟡 ROOM HEADER
+        // tableBody.push([
+        //     {
+        //         text: room.toUpperCase(),
+        //         colSpan: 5,
+        //         fillColor: '#FFFDE7',
+        //         bold: true,
+        //         // alignment: 'center',
+        //         margin: [0, 6, 0, 6]
+        //     },
+        //     {}, {}, {}, {}
+        // ]);
+
         tableBody.push([
-            {
-                text: room.toUpperCase(),
-                colSpan: 5,
-                fillColor: '#FFFDE7',
-                bold: true,
-                // alignment: 'center',
-                margin: [0, 6, 0, 6]
-            },
-            {}, {}, {}, {}
-        ]);
+    {
+        text: room.toUpperCase(),
+        colSpan: 6,
+        fillColor: '#FFFDE7',
+        bold: true,
+        margin: [0, 2, 0, 2]
+    },
+    {}, {}, {}, {}, {}
+]);
 
         let roomTotal = 0;
 
-        Object.keys(grouped[room]).forEach(cat => {
+      
 
-            // ⚪ CATEGORY HEADER
-            tableBody.push([
-                {
-                    text: '   ' + cat,
-                    colSpan: 5,
+          Object.keys(grouped[room]).forEach(cat => {
+
+    const catItems = grouped[room][cat];
+
+    catItems.forEach((item, index) => {
+
+        let qty = Number(item.qty || 0);
+        let price = Number(item.price || 0);
+        let lineTotal = qty * price;
+
+        roomTotal += lineTotal;
+        total += lineTotal;
+
+        tableBody.push([
+
+            index === 0
+                ? {
+                    text: cat,
+                    rowSpan: catItems.length,
                     fillColor: '#F5F5F5',
                     bold: true
-                },
-                {}, {}, {}, {}
-            ]);
+                }
+                : {},
 
-            grouped[room][cat].forEach(item => {
+            item.sub,
 
-                let qty = Number(item.qty || 0);
-                let price = Number(item.price || 0);
-                let lineTotal = qty * price;
+            {
+                text: item.type || 'Само труд',
+                fillColor:
+                    item.type === 'Материали и труд'
+                        ? '#F5F5F5'
+                        : null,
+                bold: true
+            },
 
-                roomTotal += lineTotal;
-                total += lineTotal;
+            `${qty} ${item.unit}`,
 
-                tableBody.push([
+            `${price.toFixed(2)} €`,
 
-                    // Описание
-                    '      ' + item.sub,
-
-                    // Тип
-                    {
-                        text: item.type || 'Само Труд',
-                        fillColor: item.type === 'Труд и материали' ? '#E8F5E9' : null,
-                        bold: true
-                    },
-
-                    // Количество
-                    `${qty} ${item.unit}`,
-
-                    // Ед. цена
-                    `${price.toFixed(2)} €`,
-
-                    // Общо
-                    `${lineTotal.toFixed(2)} €`
-                ]);
-            });
-
-        });
-
+            `${lineTotal.toFixed(2)} €`
+        ]);
 
     });
+
+});            
+
+         });
+
 
     content.push({
         table: {
             headerRows: 1,
-            widths: ['*', 90, 60, 80, 80],
+            // widths: ['*', 90, 60, 80, 80],
+            widths: ['*', '*', 90, 40, 60, 70],
             body: tableBody
         },
         layout: {
